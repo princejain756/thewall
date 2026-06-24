@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap');
+
+:root {
+  --maroon: #8b1a10;
+  --maroon-dark: #6f140c;
+  --cream: #f5f1e6;
+  --cream-dark: #ebe5d9;
+  --text-on-cream: #8b1a10;
+  --text-on-maroon: #f5f1e6;
+  --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --sans: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --section-pad-x: clamp(1.25rem, 5vw, 5rem);
+  --section-pad-y: clamp(3.5rem, 7vw, 6rem);
+  --nav-h: 68px;
+  --max-width: 1440px;
+  --radius-btn: 6px;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+  width: 100%;
+  max-width: 100%;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--text-on-cream);
+  line-height: 1.6;
+  overflow-x: clip;
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  position: relative;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
+}
+
+main {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+ul {
+  list-style: none;
+}
+
+.serif {
+  font-family: var(--serif);
+}
+
+.label {
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.heading-serif {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 4.2vw, 3.35rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+.body-text {
+  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  font-weight: 400;
+  line-height: 1.65;
+  max-width: 34ch;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: var(--radius-btn);
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn--maroon {
+  background: var(--maroon);
+  color: var(--cream);
+}
+
+.btn--maroon:hover {
+  background: var(--maroon-dark);
+  box-shadow: 0 8px 24px rgba(139, 26, 16, 0.25);
+}
+
+.btn--cream {
+  background: var(--cream);
+  color: var(--maroon);
+}
+
+.btn--cream:hover {
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.section {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  position: relative;
+  scroll-margin-top: 4.5rem;
+}
+
+.section--cream {
+  background: var(--cream);
+  color: var(--text-on-cream);
+}
+
+.section--maroon {
+  background: var(--maroon);
+  color: var(--text-on-maroon);
+}
+
+.container {
+  width: min(var(--max-width), 100%);
+  max-width: 100%;
+  margin-inline: auto;
+  padding-inline: var(--section-pad-x);
+}
+
+.split-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: center;
+  padding-block: var(--section-pad-y);
+  min-height: min(88vh, 820px);
+  min-width: 0;
+  width: 100%;
+}
+
+.split-section__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-block: 1rem;
+  min-width: 0;
+}
+
+.split-section__media {
+  min-width: 0;
+}
+
+.split-section__content .label {
+  color: currentColor;
+  opacity: 0.95;
+}
+
+@media (max-width: 960px) {
+  :root {
+    --section-pad-x: clamp(1.15rem, 4.5vw, 1.5rem);
+    --section-pad-y: clamp(2.75rem, 9vw, 3.5rem);
+  }
+
+  .heading-serif {
+    font-size: clamp(1.85rem, 8vw, 2.35rem);
+  }
+
+  .body-text {
+    max-width: none;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+    padding-block: 1rem;
+  }
+
+  .split-section {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding-block: var(--section-pad-y);
+    gap: 2rem;
+  }
+
+  .split-section--reverse-mobile .split-section__media {
+    order: -1;
+  }
+}

@@ -1,0 +1,138 @@
+---
+const galleryPhotos = [
+  'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=300&h=380&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300&h=380&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1609220136736-443aaeec3ad2?w=300&h=380&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=380&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300&h=380&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=300&h=380&fit=crop&q=80',
+];
+---
+
+<section class="section section--cream memory-wall" id="memory-frames">
+  <div class="memory-wall__top container">
+    <div class="memory-wall__content">
+      <span class="label">Memories That Stay</span>
+      <h2 class="heading-serif">made for every memory.</h2>
+      <p class="body-text">
+        Weddings, travel, couples, family, babies, pets, and celebrations — every wall has a story worth telling.
+      </p>
+      <a href="#shop" class="btn btn--maroon">Explore Collection <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="memory-wall__gallery" aria-hidden="true">
+      {
+        galleryPhotos.map((src, i) => (
+          <div class={`gallery-frame gallery-frame--${i + 1}`}>
+            <div class="gallery-frame__inner">
+              <img src={src} alt="" loading="lazy" width="140" height="175" />
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="memory-wall__lifestyle">
+    <img
+      src="/images/granduncle.png"
+      alt="Couple looking through a family photo album in front of a wall of framed memories"
+      loading="lazy"
+      width="1496"
+      height="1051"
+    />
+    <div class="memory-wall__lifestyle-gradient"></div>
+  </div>
+</section>
+
+<style>
+  .memory-wall__top {
+    display: grid;
+    grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+    padding-block: var(--section-pad-y) 2rem;
+    min-width: 0;
+  }
+
+  .memory-wall__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding-top: 1rem;
+    min-width: 0;
+  }
+
+  .memory-wall__gallery {
+    position: relative;
+    min-height: 320px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.65rem;
+    align-items: start;
+    padding-top: 0.5rem;
+  }
+
+  .gallery-frame {
+    position: relative;
+  }
+
+  .gallery-frame__inner {
+    background: #111;
+    padding: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .gallery-frame__inner img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.1);
+  }
+
+  .gallery-frame--1 { grid-column: 1; margin-top: 2rem; }
+  .gallery-frame--2 { grid-column: 2; margin-top: 0; }
+  .gallery-frame--3 { grid-column: 3; margin-top: 1.5rem; }
+  .gallery-frame--4 { grid-column: 4; margin-top: 0.5rem; }
+  .gallery-frame--5 { grid-column: 5; margin-top: 1rem; }
+  .gallery-frame--6 { grid-column: 6; margin-top: 2.5rem; }
+
+  .memory-wall__lifestyle {
+    position: relative;
+    width: 100%;
+    max-height: 520px;
+    overflow: hidden;
+  }
+
+  .memory-wall__lifestyle img {
+    width: 100%;
+    height: clamp(300px, 44vw, 560px);
+    object-fit: cover;
+    object-position: center 42%;
+    filter: saturate(0.96) brightness(0.98);
+  }
+
+  .memory-wall__lifestyle-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--cream) 0%, transparent 18%, transparent 85%, rgba(245, 241, 230, 0.4) 100%);
+    pointer-events: none;
+  }
+
+  @media (max-width: 960px) {
+    .memory-wall__top {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding-block: var(--section-pad-y) 1.5rem;
+    }
+
+    .memory-wall__gallery {
+      display: none;
+    }
+
+    .memory-wall__lifestyle img {
+      height: clamp(240px, 56vw, 380px);
+      object-position: center 40%;
+    }
+  }
+</style>
