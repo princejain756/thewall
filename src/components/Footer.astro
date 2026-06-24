@@ -1,0 +1,192 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer section--cream">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <a href="/" class="footer__logo-link" aria-label="the.Wall home">
+        <img
+          src="/logo.png"
+          alt="the.Wall — your personal archive"
+          class="footer__logo-img"
+          width="163"
+          height="45"
+          loading="lazy"
+          decoding="async"
+        />
+      </a>
+      <p class="footer__tagline">A place where memories become wall-worthy.</p>
+      <p class="footer__mission">
+        The Wall Records preserves <strong>MEMORIES.</strong> Whether it's a favorite movie, a travel destination, a special person, or a moment that changed someone's life — we help people turn memories into something they can see every day.
+      </p>
+    </div>
+
+    <div class="footer__columns">
+      <div class="footer__col">
+        <h4>Memories</h4>
+        <ul>
+          <li><a href="#memories">Memory Albums</a></li>
+          <li><a href="#memories">Photo Books</a></li>
+          <li><a href="#memories">Wedding Albums</a></li>
+          <li><a href="#memories">Family Albums</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Posters</h4>
+        <ul>
+          <li><a href="#art-posters">Cinema</a></li>
+          <li><a href="#art-posters">Photography</a></li>
+          <li><a href="#art-posters">Quotes</a></li>
+          <li><a href="#art-posters">Aesthetic</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Artists</h4>
+        <ul>
+          <li><a href="#artist-originals">Originals</a></li>
+          <li><a href="#artist-originals">Limited Editions</a></li>
+          <li><a href="#artist-originals">Prints</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#gifting">Gifting</a></li>
+          <li><a href="#gifting">Bargain Wall</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer__bottom container">
+    <p>&copy; {currentYear} The Wall Records. All rights reserved.</p>
+    <p class="footer__vibe">Emotional · Premium · Modern · Elegant · Personal · Story-Driven</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid rgba(139, 26, 16, 0.1);
+    padding-top: clamp(3rem, 6vw, 5rem);
+  }
+
+  .footer__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.8fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    padding-bottom: 3rem;
+    min-width: 0;
+  }
+
+  .footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer__logo-link {
+    display: inline-block;
+    align-self: flex-start;
+  }
+
+  .footer__logo-img {
+    display: block;
+    height: clamp(36px, 5vw, 44px);
+    width: auto;
+    border-radius: 2px;
+  }
+
+  .footer__tagline {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--maroon);
+    font-style: italic;
+    max-width: 32ch;
+  }
+
+  .footer__mission {
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--maroon);
+    opacity: 0.8;
+    max-width: 42ch;
+  }
+
+  .footer__mission strong {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .footer__columns {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    min-width: 0;
+  }
+
+  .footer__col h4 {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    margin-bottom: 1rem;
+  }
+
+  .footer__col a {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--maroon);
+    opacity: 0.75;
+    padding: 0.25rem 0;
+    transition: opacity var(--transition);
+  }
+
+  .footer__col a:hover {
+    opacity: 1;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.5rem 2.5rem;
+    border-top: 1px solid rgba(139, 26, 16, 0.08);
+    font-size: 0.75rem;
+    color: var(--maroon);
+    opacity: 0.65;
+  }
+
+  .footer__vibe {
+    letter-spacing: 0.02em;
+  }
+
+  @media (max-width: 900px) {
+    .footer__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .footer__columns {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer__mission {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .footer__columns {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .footer__bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

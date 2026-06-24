@@ -1,0 +1,39 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'the.Wall — your personal archive',
+  description = 'The Wall Records preserves memories. Transform your moments into timeless wall-worthy art, albums, and framed keepsakes.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <slot />
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  @import '../styles/global.css';
+
+  .site-shell {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    position: relative;
+    isolation: isolate;
+  }
+</style>
