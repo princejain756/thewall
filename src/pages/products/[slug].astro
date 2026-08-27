@@ -76,38 +76,15 @@ const customGalleryThumbs = [
           <!-- Main Interactive Mockup -->
           <div class="custom-mockup-wrapper">
             <div class="custom-mockup" id="mockup-canvas" data-theme="cream">
-              <div class="custom-mockup__book">
-                <div class="custom-mockup__cover">
-                  <!-- User Photo inside template frame -->
-                  <div class="custom-mockup__photo-container" id="mockup-photo-container">
-                    <img
-                      id="mockup-photo"
-                      src={images[0] || '/images/custom-made/memory-poster.png'}
-                      alt="Custom photo preview"
-                    />
-                    <div class="custom-mockup__photo-placeholder" id="photo-placeholder" hidden>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <polyline points="21 15 16 10 5 21"/>
-                      </svg>
-                      <span>Click or drop photo here</span>
-                    </div>
-                  </div>
-
-                  <!-- Overlay Typography (Odd Giraffe style) -->
-                  <div class="custom-mockup__overlay" id="mockup-overlay">
-                    <span class="custom-mockup__overlay-top" id="overlay-top-text">
-                      {product.slug.includes('sister') ? 'best' : 'timeless'}
-                    </span>
-                    <span class="custom-mockup__overlay-main" id="overlay-main-text">
-                      {product.slug.includes('sister') ? 'sister' : 'memories'}
-                    </span>
-                    <span class="custom-mockup__overlay-bottom" id="overlay-bottom-text">
-                      {product.slug.includes('sister') ? 'HAPPY RAKSHABANDHAN' : 'YOUR STORY FRAMED'}
-                    </span>
-                  </div>
-                </div>
+              <div class="custom-mockup__stage-inner">
+                <img
+                  id="mockup-photo"
+                  class="custom-mockup__image"
+                  src={images[0] || '/images/custom-made/memory-poster.png'}
+                  alt={product.title}
+                  width="540"
+                  height="540"
+                />
               </div>
 
               <!-- Quick action floating on mockup -->
@@ -516,123 +493,41 @@ const customGalleryThumbs = [
   .custom-mockup {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1.08;
+    aspect-ratio: 1 / 1;
     background-color: #fffaf2;
     border-radius: 12px;
-    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0,0,0,0.04);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: clamp(1.5rem, 4vw, 2.75rem);
+    padding: clamp(1rem, 3vw, 2rem);
     transition: background-color 0.35s ease;
     overflow: hidden;
   }
 
   .custom-mockup[data-theme="cream"] { background-color: #fffaf2; }
-  .custom-mockup[data-theme="terracotta"] { background-color: #fcece4; }
+  .custom-mockup[data-theme="terracotta"] { background-color: #fbeee8; }
   .custom-mockup[data-theme="sage"] { background-color: #edf6ec; }
-  .custom-mockup[data-theme="charcoal"] { background-color: #2b2b2b; }
+  .custom-mockup[data-theme="charcoal"] { background-color: #242424; }
 
-  .custom-mockup__book {
+  .custom-mockup__stage-inner {
     position: relative;
     width: 100%;
-    max-width: 440px;
-    aspect-ratio: 1 / 1;
-    box-shadow: 0 16px 32px rgba(0,0,0,0.16);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .custom-mockup__image {
+    width: 100%;
+    height: 100%;
+    max-height: 520px;
+    object-fit: contain;
+    object-position: center;
     border-radius: 4px;
-    overflow: hidden;
-    background: #fff;
-  }
-
-  .custom-mockup__cover {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .custom-mockup__photo-container {
-    position: absolute;
-    inset: 12%;
-    border-radius: 2px;
-    overflow: hidden;
-    background: #e9e4dc;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-  }
-
-  .custom-mockup__photo-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.14));
     transition: transform 0.3s ease;
-  }
-
-  .custom-mockup__photo-placeholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    color: #8b1a10;
-    opacity: 0.7;
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
-
-  /* Overlay text */
-  .custom-mockup__overlay {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 6% 8%;
-    text-align: center;
-    z-index: 10;
-  }
-
-  .custom-mockup__overlay-top {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(2rem, 5vw, 3.4rem);
-    font-weight: 700;
-    color: #274c3d;
-    line-height: 0.9;
-    letter-spacing: -0.02em;
-    text-shadow: 0 1px 2px rgba(255,255,255,0.7);
-  }
-
-  .custom-mockup__overlay-main {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: clamp(2.4rem, 6.2vw, 4.2rem);
-    font-weight: 700;
-    color: #274c3d;
-    line-height: 0.85;
-    letter-spacing: -0.02em;
-    text-shadow: 0 1px 2px rgba(255,255,255,0.7);
-    margin-top: auto;
-    margin-bottom: 0.5rem;
-  }
-
-  .custom-mockup__overlay-bottom {
-    font-family: 'Montserrat', system-ui, sans-serif;
-    font-size: clamp(0.55rem, 1vw, 0.7rem);
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    color: #274c3d;
-    opacity: 0.85;
-    text-transform: uppercase;
-  }
-
-  .custom-mockup[data-theme="charcoal"] .custom-mockup__overlay-top,
-  .custom-mockup[data-theme="charcoal"] .custom-mockup__overlay-main,
-  .custom-mockup[data-theme="charcoal"] .custom-mockup__overlay-bottom {
-    color: #fff;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
   }
 
   .custom-mockup__quick-upload {
