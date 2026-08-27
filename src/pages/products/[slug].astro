@@ -138,7 +138,7 @@ const customGalleryThumbs = [
           <div class="custom-pdp__option-group">
             <div class="custom-pdp__label-row">
               <label class="custom-pdp__option-label" for="size-select">Size</label>
-              <span class="custom-pdp__size-guide-link" id="view-size-guide">A4 & A5 Dimensions</span>
+              <span class="custom-pdp__size-guide-link" id="view-size-guide" role="button" tabindex="0">A4 & A5 Dimensions</span>
             </div>
             <div class="custom-pdp__size-buttons" id="size-options">
               {product.variants.map((v, i) => (
@@ -156,6 +156,18 @@ const customGalleryThumbs = [
                   </span>
                 </button>
               ))}
+            </div>
+            <!-- Selected Size Live Dimension Info -->
+            <div class="custom-pdp__selected-dim" id="selected-dim-card">
+              <div class="custom-pdp__selected-dim-main">
+                <span class="custom-pdp__selected-dim-label">Dimensions for <strong id="selected-dim-name">A4</strong>:</span>
+                <strong class="custom-pdp__selected-dim-val" id="selected-dim-val">8.3" × 11.7" (210 × 297 mm)</strong>
+              </div>
+              <div class="custom-pdp__selected-dim-sub">
+                <span id="selected-dim-px">Print Resolution: 2480 × 3508 px @ 300 DPI</span>
+                <span class="custom-pdp__selected-dim-dot">·</span>
+                <span id="selected-dim-desc">Standard wall poster</span>
+              </div>
             </div>
           </div>
 
@@ -220,8 +232,8 @@ const customGalleryThumbs = [
                 </svg>
               </div>
               <div class="custom-pdp__upload-text">
-                <strong id="upload-status-title">Upload your photo for A4 / A5 mockup</strong>
-                <span id="upload-status-desc">Click to browse or drag & drop (JPG, PNG, HEIC up to 25MB)</span>
+                <strong id="upload-status-title">Upload your photo for A4 (8.3" × 11.7") print</strong>
+                <span id="upload-status-desc">Recommended: 2480 × 3508 px @ 300 DPI (JPG, PNG, HEIC up to 25MB)</span>
               </div>
               <button type="button" class="btn btn--outline custom-pdp__upload-btn" id="trigger-upload-btn">
                 Browse Photo
@@ -234,6 +246,62 @@ const customGalleryThumbs = [
                 <span>Photo ready for high-definition printing</span>
               </div>
               <button type="button" class="custom-pdp__upload-remove" id="remove-uploaded-photo">Remove</button>
+            </div>
+          </div>
+
+          <!-- Upload Specs Callout (prominent, always visible) -->
+          <div class="custom-pdp__spec-callout" role="region" aria-label="Upload specifications">
+            <div class="custom-pdp__spec-head">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="9" y1="13" x2="15" y2="13"/>
+                <line x1="9" y1="17" x2="15" y2="17"/>
+              </svg>
+              <strong>Upload Specs</strong>
+              <span class="custom-pdp__spec-pill" id="spec-pill-badge">A4 · 300 DPI</span>
+            </div>
+            <div class="custom-pdp__spec-grid">
+              <div class="custom-pdp__spec-cell">
+                <span class="custom-pdp__spec-label">Selected Size</span>
+                <span class="custom-pdp__spec-value" id="spec-selected-size">A4 (8.3" × 11.7")</span>
+              </div>
+              <div class="custom-pdp__spec-cell">
+                <span class="custom-pdp__spec-label">Print Resolution</span>
+                <span class="custom-pdp__spec-value" id="spec-selected-pixels">2480 × 3508 px @ 300 DPI</span>
+              </div>
+              <div class="custom-pdp__spec-cell">
+                <span class="custom-pdp__spec-label">File types</span>
+                <span class="custom-pdp__spec-value">JPG, PNG, WebP, HEIC</span>
+              </div>
+              <div class="custom-pdp__spec-cell">
+                <span class="custom-pdp__spec-label">Max file size</span>
+                <span class="custom-pdp__spec-value">25 MB</span>
+              </div>
+              <div class="custom-pdp__spec-cell">
+                <span class="custom-pdp__spec-label">Paper Finish</span>
+                <span class="custom-pdp__spec-value">300 GSM Archival Matte</span>
+              </div>
+              <div class="custom-pdp__spec-cell">
+                <span class="custom-pdp__spec-label">Color profile</span>
+                <span class="custom-pdp__spec-value">sRGB recommended</span>
+              </div>
+            </div>
+            <div class="custom-pdp__spec-actions">
+              <button type="button" class="custom-pdp__spec-link" id="open-size-guide">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                  <line x1="12" y1="22.08" x2="12" y2="12"/>
+                </svg>
+                View full size guide
+              </button>
+              <a class="custom-pdp__spec-link" href="/print/poster-specs" target="_blank" rel="noopener">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+                </svg>
+                Size & DPI chart
+              </a>
             </div>
           </div>
 
@@ -406,6 +474,84 @@ const customGalleryThumbs = [
       </section>
     )}
   </main>
+
+  <!-- Size Guide Modal (customizer only) -->
+  {isCustom && (
+    <div class="size-guide-modal" id="size-guide-modal" role="dialog" aria-modal="true" aria-labelledby="size-guide-title" hidden>
+      <div class="size-guide-modal__backdrop" data-close-modal></div>
+      <div class="size-guide-modal__panel" role="document">
+        <div class="size-guide-modal__head">
+          <h2 id="size-guide-title" class="size-guide-modal__title">Size & Upload Guide</h2>
+          <button type="button" class="size-guide-modal__close" data-close-modal aria-label="Close size guide">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div class="size-guide-modal__body">
+          <p class="size-guide-modal__intro">All sizes are printed on ultra-thick 300 GSM archival matte paper with anti-glare coating, at <strong>300 DPI</strong> for crisp, gallery-quality output.</p>
+
+          <div class="size-guide-modal__visual" aria-hidden="true">
+            <div class="size-bar size-bar--a5" data-label="A5">
+              <span class="size-bar__dim">5.8 × 8.3"</span>
+              <span class="size-bar__px">1748 × 2480 px</span>
+            </div>
+            <div class="size-bar size-bar--a4" data-label="A4">
+              <span class="size-bar__dim">8.3 × 11.7"</span>
+              <span class="size-bar__px">2480 × 3508 px</span>
+            </div>
+            <div class="size-bar size-bar--square" data-label="Square">
+              <span class="size-bar__dim">8.5 × 8.5"</span>
+              <span class="size-bar__px">2550 × 2550 px</span>
+            </div>
+            <div class="size-bar size-bar--a3" data-label="A3">
+              <span class="size-bar__dim">11.7 × 16.5"</span>
+              <span class="size-bar__px">3510 × 4950 px</span>
+            </div>
+          </div>
+
+          <table class="size-guide-modal__table">
+            <thead>
+              <tr><th>Size</th><th>Inches</th><th>Pixels @ 300 DPI</th><th>Best for</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>A5</strong></td><td>5.8 × 8.3"</td><td>1748 × 2480 px</td><td>Desk, shelf, small gift</td></tr>
+              <tr><td><strong>A4</strong></td><td>8.3 × 11.7"</td><td>2480 × 3508 px</td><td>Standard wall poster</td></tr>
+              <tr><td><strong>Square</strong></td><td>8.5 × 8.5"</td><td>2550 × 2550 px</td><td>Instagram prints, frames</td></tr>
+              <tr><td><strong>A3</strong></td><td>11.7 × 16.5"</td><td>3510 × 4950 px</td><td>Statement wall piece</td></tr>
+            </tbody>
+          </table>
+
+          <div class="size-guide-modal__upload">
+            <h3 class="size-guide-modal__h3">How to prep your file</h3>
+            <ul class="size-guide-modal__list">
+              <li><strong>Format:</strong> JPG, PNG, WebP, or HEIC. PNG-24 for templates with a transparent cutout window.</li>
+              <li><strong>Resolution:</strong> Match the pixel dimensions above. Higher = sharper print; lower will be upscaled and may soften.</li>
+              <li><strong>Color profile:</strong> sRGB recommended. CMYK files are auto-converted.</li>
+              <li><strong>File size:</strong> Up to <strong>25 MB</strong>. For very large files, export at 90–95% JPG quality.</li>
+              <li><strong>Cropping:</strong> Upload the exact final crop. We do not crop for you. Leave a small bleed if your image extends edge-to-edge.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="size-guide-modal__foot">
+          <a class="size-guide-modal__btn size-guide-modal__btn--primary" href="/downloads/poster-specs.pdf" download>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+            Download as PDF
+          </a>
+          <a class="size-guide-modal__btn" href="/print/poster-specs" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Open print-friendly page
+          </a>
+          <button type="button" class="size-guide-modal__btn" data-close-modal>Close</button>
+        </div>
+      </div>
+    </div>
+  )}
+
   <Footer />
 </Layout>
 
@@ -706,33 +852,95 @@ const customGalleryThumbs = [
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0.65rem 0.5rem;
-    border: 1.5px solid #dcd6cd;
+    padding: 0.75rem 0.5rem;
+    border: 1.5px solid #d4cdc3;
     border-radius: 8px;
-    background: #fff;
+    background: #ffffff;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
+    text-align: center;
   }
 
   .custom-size-pill:hover {
     border-color: #8b1a10;
+    background: #fffdfc;
   }
 
   .custom-size-pill--active {
-    border-color: #1a1a1a;
-    background: #1a1a1a;
-    color: #fff;
+    border-color: #1a1a1a !important;
+    background: #1a1a1a !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
   }
 
   .custom-size-pill__name {
-    font-size: 0.88rem;
+    font-size: 0.95rem;
     font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.15;
   }
 
   .custom-size-pill__dim {
-    font-size: 0.68rem;
-    opacity: 0.75;
-    margin-top: 2px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #4a4a4a;
+    margin-top: 3px;
+    line-height: 1.15;
+  }
+
+  .custom-size-pill--active .custom-size-pill__name {
+    color: #ffffff !important;
+  }
+
+  .custom-size-pill--active .custom-size-pill__dim {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    font-weight: 600;
+  }
+
+  /* Live Selected Dimension Box */
+  .custom-pdp__selected-dim {
+    margin-top: 0.65rem;
+    padding: 0.65rem 0.85rem;
+    background: #fdfbf7;
+    border: 1px solid #e7decb;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .custom-pdp__selected-dim-main {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+  }
+
+  .custom-pdp__selected-dim-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #8b1a10;
+    font-weight: 600;
+  }
+
+  .custom-pdp__selected-dim-val {
+    font-size: 0.88rem;
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+
+  .custom-pdp__selected-dim-sub {
+    font-size: 0.72rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+
+  .custom-pdp__selected-dim-dot {
+    opacity: 0.4;
   }
 
   .custom-pdp__color-swatches {
@@ -861,6 +1069,333 @@ const customGalleryThumbs = [
     color: #8b1a10;
     text-decoration: underline;
     cursor: pointer;
+  }
+
+  /* Upload Specs Callout */
+  .custom-pdp__spec-callout {
+    margin-top: 0.25rem;
+    padding: 1rem 1.1rem 0.85rem;
+    background: linear-gradient(180deg, #fffaf8 0%, #fdf6f3 100%);
+    border: 1.5px solid #8b1a10;
+    border-radius: 10px;
+    box-shadow: 0 1px 0 rgba(139,26,16,0.04);
+  }
+
+  .custom-pdp__spec-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #8b1a10;
+    margin-bottom: 0.85rem;
+  }
+
+  .custom-pdp__spec-head strong {
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+  }
+
+  .custom-pdp__spec-pill {
+    margin-left: auto;
+    background: #8b1a10;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+  }
+
+  .custom-pdp__spec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem 0.9rem;
+  }
+
+  .custom-pdp__spec-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+  }
+
+  .custom-pdp__spec-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #8b1a10;
+    opacity: 0.7;
+  }
+
+  .custom-pdp__spec-value {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    word-break: break-word;
+  }
+
+  .custom-pdp__spec-actions {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 0.9rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed rgba(139,26,16,0.25);
+    flex-wrap: wrap;
+  }
+
+  .custom-pdp__spec-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: #8b1a10;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: inherit;
+  }
+
+  .custom-pdp__spec-link:hover { text-decoration: underline; }
+
+  @media (min-width: 480px) {
+    .custom-pdp__spec-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Size Guide Modal */
+  .size-guide-modal[hidden] { display: none; }
+
+  .size-guide-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    animation: sizeGuideFade 0.18s ease-out;
+  }
+
+  @keyframes sizeGuideFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .size-guide-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 14, 10, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+  .size-guide-modal__panel {
+    position: relative;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    max-width: 640px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: sizeGuideSlide 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  @keyframes sizeGuideSlide {
+    from { transform: translateY(12px) scale(0.98); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+  }
+
+  .size-guide-modal__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid var(--cream-dark);
+    background: var(--cream);
+  }
+
+  .size-guide-modal__title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 1.4rem;
+    margin: 0;
+    color: #1a1a1a;
+  }
+
+  .size-guide-modal__close {
+    background: none;
+    border: none;
+    color: #1a1a1a;
+    cursor: pointer;
+    padding: 0.35rem;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+  }
+
+  .size-guide-modal__close:hover { background: rgba(0,0,0,0.06); }
+
+  .size-guide-modal__body {
+    padding: 1.25rem 1.25rem 0.5rem;
+    overflow-y: auto;
+  }
+
+  .size-guide-modal__intro {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: #3a3a3a;
+    margin: 0 0 1rem;
+  }
+
+  .size-guide-modal__visual {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1rem 0 1.25rem;
+    border-bottom: 1px solid var(--cream-dark);
+    margin-bottom: 1rem;
+  }
+
+  .size-bar {
+    background: linear-gradient(180deg, #f6e8e5 0%, #e8c9c0 100%);
+    border: 1.5px solid #8b1a10;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.4rem 0.3rem;
+    color: #1a1a1a;
+    min-width: 50px;
+  }
+
+  .size-bar__dim {
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .size-bar__px {
+    font-size: 0.6rem;
+    opacity: 0.7;
+    margin-top: 0.15rem;
+  }
+
+  .size-bar--a5 { height: 90px; }
+  .size-bar--a4 { height: 130px; }
+  .size-bar--square { height: 110px; width: 110px; }
+  .size-bar--a3 { height: 165px; }
+
+  .size-guide-modal__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .size-guide-modal__table th,
+  .size-guide-modal__table td {
+    text-align: left;
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .size-guide-modal__table th {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #8b1a10;
+    background: rgba(139,26,16,0.04);
+  }
+
+  .size-guide-modal__table td { color: #1a1a1a; }
+  .size-guide-modal__table tr:last-child td { border-bottom: none; }
+
+  .size-guide-modal__h3 {
+    font-size: 0.95rem;
+    margin: 0 0 0.5rem;
+    color: #1a1a1a;
+  }
+
+  .size-guide-modal__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+
+  .size-guide-modal__list li {
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: #3a3a3a;
+    padding: 0.4rem 0 0.4rem 1.2rem;
+    position: relative;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+
+  .size-guide-modal__list li:last-child { border-bottom: none; }
+
+  .size-guide-modal__list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.85rem;
+    width: 6px;
+    height: 6px;
+    background: #8b1a10;
+    border-radius: 50%;
+  }
+
+  .size-guide-modal__foot {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    padding: 1rem 1.25rem;
+    border-top: 1px solid var(--cream-dark);
+    background: #fafafa;
+  }
+
+  .size-guide-modal__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: 1.5px solid #d1d1d1;
+    background: #fff;
+    color: #1a1a1a;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .size-guide-modal__btn:hover { border-color: #1a1a1a; }
+
+  .size-guide-modal__btn--primary {
+    background: #8b1a10;
+    border-color: #8b1a10;
+    color: #fff;
+  }
+
+  .size-guide-modal__btn--primary:hover {
+    background: #6f140c;
+    border-color: #6f140c;
+  }
+
+  @media (max-width: 480px) {
+    .size-guide-modal__visual { gap: 0.35rem; }
+    .size-bar--a3 { height: 140px; }
+    .size-bar--a4 { height: 110px; }
+    .size-bar--a5 { height: 75px; }
+    .size-bar--square { width: 90px; height: 90px; }
+    .size-guide-modal__table { font-size: 0.74rem; }
+    .size-guide-modal__table th, .size-guide-modal__table td { padding: 0.4rem 0.35rem; }
   }
 
   /* CTAs */
@@ -1270,6 +1805,44 @@ const customGalleryThumbs = [
     };
   }
 
+  const SIZE_INFO = {
+    'A4': { inches: '8.3" × 11.7"', mm: '210 × 297 mm', pixels: '2480 × 3508 px', desc: 'Standard wall poster' },
+    'A5': { inches: '5.8" × 8.3"', mm: '148 × 210 mm', pixels: '1748 × 2480 px', desc: 'Desk, shelf, compact gift' },
+    'Square': { inches: '8.5" × 8.5"', mm: '216 × 216 mm', pixels: '2550 × 2550 px', desc: 'Square frames & Instagram memories' },
+    'A3': { inches: '11.7" × 16.5"', mm: '297 × 420 mm', pixels: '3508 × 4960 px', desc: 'Large statement wall piece' },
+  };
+
+  function updateSizeDimensions(size) {
+    const info = SIZE_INFO[size] || {
+      inches: 'Custom Dimensions',
+      mm: 'Standard Print',
+      pixels: '300 DPI High-Res',
+      desc: 'Gallery-grade archival print',
+    };
+
+    const dimName = document.getElementById('selected-dim-name');
+    const dimVal = document.getElementById('selected-dim-val');
+    const dimPx = document.getElementById('selected-dim-px');
+    const dimDesc = document.getElementById('selected-dim-desc');
+    const uploadTitle = document.getElementById('upload-status-title');
+    const uploadDesc = document.getElementById('upload-status-desc');
+    const specPill = document.getElementById('spec-pill-badge');
+    const specSize = document.getElementById('spec-selected-size');
+    const specPx = document.getElementById('spec-selected-pixels');
+
+    if (dimName) dimName.textContent = size;
+    if (dimVal) dimVal.textContent = `${info.inches} (${info.mm})`;
+    if (dimPx) dimPx.textContent = `Print Resolution: ${info.pixels} @ 300 DPI`;
+    if (dimDesc) dimDesc.textContent = info.desc;
+
+    if (uploadTitle) uploadTitle.textContent = `Upload your photo for ${size} (${info.inches}) print`;
+    if (uploadDesc) uploadDesc.textContent = `Recommended: ${info.pixels} @ 300 DPI (JPG, PNG, HEIC up to 25MB)`;
+
+    if (specPill) specPill.textContent = `${size} · 300 DPI`;
+    if (specSize) specSize.textContent = `${size} (${info.inches})`;
+    if (specPx) specPx.textContent = `${info.pixels} @ 300 DPI`;
+  }
+
   // Size pill clicking
   const sizeBtns = document.querySelectorAll('.custom-size-pill, .pdp__size-btn');
   const displayPrice = document.getElementById('display-price');
@@ -1282,6 +1855,9 @@ const customGalleryThumbs = [
       });
       btn.classList.add(btn.classList.contains('custom-size-pill') ? 'custom-size-pill--active' : 'pdp__size-btn--active');
 
+      const size = btn.dataset.size || 'A4';
+      updateSizeDimensions(size);
+
       const price = parseInt(btn.dataset.price || '0');
       if (displayPrice) displayPrice.textContent = `₹${(price / 100).toFixed(2)}`;
       if (comparePrice && btn.dataset.compare) {
@@ -1292,6 +1868,27 @@ const customGalleryThumbs = [
       }
     });
   });
+
+  // Initial dimensions sync on page load
+  const initialActiveBtn = document.querySelector('.custom-size-pill--active');
+  if (initialActiveBtn && initialActiveBtn.dataset.size) {
+    updateSizeDimensions(initialActiveBtn.dataset.size);
+  }
+
+  // Sync format dropdown if changed
+  const formatSelect = document.getElementById('format-select');
+  if (formatSelect) {
+    formatSelect.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val === 'Square') {
+        const sqBtn = Array.from(sizeBtns).find((b) => b.dataset.size === 'Square');
+        if (sqBtn) sqBtn.click();
+      } else if (val.includes('A4')) {
+        const a4Btn = Array.from(sizeBtns).find((b) => b.dataset.size === 'A4');
+        if (a4Btn) a4Btn.click();
+      }
+    });
+  }
 
   // Customizer: Color swatch clicking
   const swatches = document.querySelectorAll('.custom-swatch');
@@ -1470,4 +2067,44 @@ const customGalleryThumbs = [
     const qtyInput = document.getElementById('qty-input');
     if (qtyInput) qtyInput.value = String(Math.min(99, parseInt(qtyInput.value) + 1));
   });
+
+  // Size Guide Modal (customizer PDP)
+  const sizeGuideModal = document.getElementById('size-guide-modal');
+  if (sizeGuideModal) {
+    const openModal = () => {
+      sizeGuideModal.removeAttribute('hidden');
+      document.body.style.overflow = 'hidden';
+      const closeBtn = sizeGuideModal.querySelector('.size-guide-modal__close');
+      if (closeBtn) setTimeout(() => closeBtn.focus(), 50);
+    };
+    const closeModal = () => {
+      sizeGuideModal.setAttribute('hidden', '');
+      document.body.style.overflow = '';
+    };
+
+    document.getElementById('view-size-guide')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal();
+    });
+    document.getElementById('view-size-guide')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openModal();
+      }
+    });
+    document.getElementById('open-size-guide')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal();
+    });
+
+    sizeGuideModal.querySelectorAll('[data-close-modal]').forEach((el) => {
+      el.addEventListener('click', closeModal);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !sizeGuideModal.hasAttribute('hidden')) {
+        closeModal();
+      }
+    });
+  }
 </script>

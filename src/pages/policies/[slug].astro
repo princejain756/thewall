@@ -8,6 +8,8 @@ export function getStaticPaths() {
   return POLICY_SLUGS.map((slug) => ({ params: { slug } }));
 }
 
+export const prerender = true;
+
 const { slug } = Astro.params;
 const page = getContentPage(slug!);
 
