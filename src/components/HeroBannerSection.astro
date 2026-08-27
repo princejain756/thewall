@@ -1,0 +1,402 @@
+---
+import { heroWallLayers, type HeroPoster } from '../data/collections';
+
+const WALL_ROW_COPIES = 3;
+
+function expandWallRow(posters: HeroPoster[]): HeroPoster[] {
+  return Array.from({ length: WALL_ROW_COPIES }, () => posters).flat();
+}
+
+const layers = [
+  { id: 'back', posters: expandWallRow(heroWallLayers.back) },
+  { id: 'mid', posters: expandWallRow(heroWallLayers.mid) },
+  { id: 'front', posters: expandWallRow(heroWallLayers.front) },
+] as const;
+
+const layerBaseCount = {
+  back: heroWallLayers.back.length,
+  mid: heroWallLayers.mid.length,
+  front: heroWallLayers.front.length,
+};
+---
+
+<section class="hero-banner section section--cream" id="hero" aria-label="Featured posters">
+  <h1 class="sr-only">the.Wall — art posters and memory prints</h1>
+
+  <a href="/shop" class="hero-banner__image-wrap">
+    <img
+      src="/hero.jpg"
+      alt="Custom made memory prints and posters from The Wall"
+      class="hero-banner__image"
+      width="1920"
+      height="660"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="hero-banner__headline">
+      <p class="hero-banner__eyebrow label">The Wall Records</p>
+      <h2 class="hero-banner__title heading-serif">Hold on to memories</h2>
+    </div>
+  </a>
+
+  <div class="hero-banner__stage">
+    <div class="hero-wall" data-hero-wall>
+      <div class="hero-wall__scene">
+        {
+          layers.map((layer) => (
+            <div class:list={['hero-wall__layer', `hero-wall__layer--${layer.id}`]}>
+              <div class="hero-wall__row">
+                {
+                  layer.posters.map((poster: HeroPoster, i) => {
+                    const baseCount = layerBaseCount[layer.id];
+                    const isPrimaryCopy = i < baseCount;
+                    const copyIndex = Math.floor(i / baseCount);
+
+                    return (
+                      <figure
+                        class:list={['hero-wall__poster', `hero-wall__poster--${poster.size}`]}
+                        style={`--rotate: ${poster.rotate}deg; --offset-y: ${poster.offsetY}px; --i: ${i}`}
+                        aria-hidden={!isPrimaryCopy ? 'true' : undefined}
+                      >
+                        <div class="hero-wall__frame">
+                          <img
+                            src={poster.src}
+                            alt={isPrimaryCopy ? poster.alt : ''}
+                            loading={layer.id === 'front' && copyIndex === 0 && i % baseCount < 2 ? 'eager' : 'lazy'}
+                            width="320"
+                            height="420"
+                          />
+                          <div class="hero-wall__sheen" aria-hidden="true" />
+                        </div>
+                      </figure>
+                    );
+                  })
+                }
+              </div>
+            </div>
+          ))
+        }
+      </div>
+      <div class="hero-wall__fade hero-wall__fade--left" aria-hidden="true" />
+      <div class="hero-wall__fade hero-wall__fade--right" aria-hidden="true" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .hero-banner {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .hero-banner__image-wrap {
+    display: block;
+    width: 100%;
+    line-height: 0;
+    background: var(--cream);
+    position: relative;
+  }
+
+  .hero-banner__headline {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.65rem;
+    padding: 1.5rem;
+    background: linear-gradient(180deg, rgba(42, 21, 18, 0.15) 0%, rgba(42, 21, 18, 0.35) 100%);
+    pointer-events: none;
+  }
+
+  .hero-banner__eyebrow {
+    color: var(--cream);
+    opacity: 0.9;
+  }
+
+  .hero-banner__title {
+    color: var(--cream);
+    font-size: clamp(2rem, 5.5vw, 3.75rem);
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+    max-width: 14ch;
+  }
+
+  .hero-banner__image {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1920 / 660;
+    display: block;
+    object-fit: cover;
+  }
+
+  .hero-banner__stage {
+    padding-block: clamp(1rem, 2.5vw, 1.75rem) clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .hero-wall {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    min-height: clamp(200px, 30vw, 300px);
+    perspective: 1200px;
+    perspective-origin: 50% 40%;
+  }
+
+  .hero-wall__scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    transform-style: preserve-3d;
+  }
+
+  .hero-wall__layer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  .hero-wall__row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: nowrap;
+    width: max-content;
+    gap: clamp(0.75rem, 2vw, 1.35rem);
+    padding-inline: clamp(1rem, 4vw, 3rem);
+  }
+
+  .hero-wall__poster {
+    flex-shrink: 0;
+    margin: 0;
+    transform: translateY(var(--offset-y, 0)) rotate(var(--rotate, 0deg));
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hero-wall__frame {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #e8e2d8;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.55) inset,
+      0 14px 36px rgba(42, 21, 18, 0.14),
+      0 3px 10px rgba(139, 26, 16, 0.07);
+  }
+
+  .hero-wall__frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: saturate(0.93) contrast(1.04);
+  }
+
+  .hero-wall__sheen {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      transparent 45%,
+      rgba(0, 0, 0, 0.05) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Back layer — smaller, softer */
+  .hero-wall__layer--back {
+    z-index: 1;
+  }
+
+  .hero-wall__layer--back .hero-wall__row {
+    transform: translateX(-6%);
+  }
+
+  .hero-wall__layer--front .hero-wall__row {
+    transform: translateX(6%);
+  }
+
+  .hero-wall__layer--back .hero-wall__poster {
+    opacity: 0.72;
+    filter: blur(0.3px);
+  }
+
+  .hero-wall__layer--back .hero-wall__frame {
+    transform: scale(0.82);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.4) inset,
+      0 8px 24px rgba(42, 21, 18, 0.1);
+  }
+
+  .hero-wall__layer--back .hero-wall__poster--sm .hero-wall__frame {
+    width: clamp(72px, 7.5vw, 96px);
+    aspect-ratio: 3 / 4.2;
+  }
+
+  .hero-wall__layer--back .hero-wall__poster--md .hero-wall__frame {
+    width: clamp(80px, 8.5vw, 108px);
+    aspect-ratio: 3 / 4.3;
+  }
+
+  /* Mid layer */
+  .hero-wall__layer--mid {
+    z-index: 2;
+  }
+
+  .hero-wall__layer--mid .hero-wall__poster {
+    opacity: 0.88;
+  }
+
+  .hero-wall__layer--mid .hero-wall__frame {
+    transform: scale(0.92);
+  }
+
+  .hero-wall__layer--mid .hero-wall__poster--sm .hero-wall__frame {
+    width: clamp(84px, 9vw, 118px);
+    aspect-ratio: 3 / 4.2;
+  }
+
+  .hero-wall__layer--mid .hero-wall__poster--md .hero-wall__frame {
+    width: clamp(92px, 9.5vw, 128px);
+    aspect-ratio: 3 / 4.3;
+  }
+
+  .hero-wall__layer--mid .hero-wall__poster--lg .hero-wall__frame {
+    width: clamp(100px, 10.5vw, 138px);
+    aspect-ratio: 3 / 4.5;
+  }
+
+  /* Front layer — largest, sharpest */
+  .hero-wall__layer--front {
+    z-index: 3;
+  }
+
+  .hero-wall__layer--front .hero-wall__frame {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.6) inset,
+      0 20px 48px rgba(42, 21, 18, 0.18),
+      0 6px 16px rgba(139, 26, 16, 0.1);
+  }
+
+  .hero-wall__layer--front .hero-wall__poster--md .hero-wall__frame {
+    width: clamp(96px, 10.5vw, 132px);
+    aspect-ratio: 3 / 4.3;
+  }
+
+  .hero-wall__layer--front .hero-wall__poster--lg .hero-wall__frame {
+    width: clamp(108px, 11.5vw, 148px);
+    aspect-ratio: 3 / 4.5;
+  }
+
+  .hero-wall__fade {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: clamp(40px, 8vw, 120px);
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .hero-wall__fade--left {
+    left: 0;
+    background: linear-gradient(90deg, var(--cream) 0%, transparent 100%);
+  }
+
+  .hero-wall__fade--right {
+    right: 0;
+    background: linear-gradient(270deg, var(--cream) 0%, transparent 100%);
+  }
+
+  @media (max-width: 960px) {
+    .hero-wall__layer--back {
+      display: none;
+    }
+
+    .hero-wall {
+      min-height: clamp(150px, 38vw, 220px);
+      perspective: 900px;
+    }
+
+    .hero-wall__row {
+      gap: 0.5rem;
+      padding-inline: 0.75rem;
+    }
+
+    .hero-wall__layer--mid .hero-wall__poster--sm .hero-wall__frame,
+    .hero-wall__layer--mid .hero-wall__poster--md .hero-wall__frame,
+    .hero-wall__layer--mid .hero-wall__poster--lg .hero-wall__frame {
+      width: clamp(72px, 22vw, 88px);
+      aspect-ratio: 3 / 4.3;
+    }
+
+    .hero-wall__layer--front .hero-wall__poster--md .hero-wall__frame,
+    .hero-wall__layer--front .hero-wall__poster--lg .hero-wall__frame {
+      width: clamp(80px, 24vw, 96px);
+      aspect-ratio: 3 / 4.3;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-wall {
+      min-height: clamp(130px, 34vw, 190px);
+    }
+
+    .hero-wall__layer--mid .hero-wall__poster--sm .hero-wall__frame,
+    .hero-wall__layer--mid .hero-wall__poster--md .hero-wall__frame,
+    .hero-wall__layer--mid .hero-wall__poster--lg .hero-wall__frame {
+      width: clamp(64px, 20vw, 76px);
+    }
+
+    .hero-wall__layer--front .hero-wall__poster--md .hero-wall__frame,
+    .hero-wall__layer--front .hero-wall__poster--lg .hero-wall__frame {
+      width: clamp(72px, 22vw, 84px);
+    }
+  }
+</style>
+
+<script>
+  const wall = document.querySelector('[data-hero-wall]');
+  const layerEls = wall?.querySelectorAll('.hero-wall__layer');
+
+  if (wall && layerEls && window.matchMedia('(min-width: 961px)').matches) {
+    const factors = { back: 0.35, mid: 0.6, front: 1 };
+
+    wall.addEventListener('mousemove', (e) => {
+      const rect = wall.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+
+      layerEls.forEach((layer) => {
+        const name = layer.className.match(/hero-wall__layer--(\w+)/)?.[1] as keyof typeof factors;
+        const factor = factors[name] ?? 0.5;
+        const row = layer.querySelector('.hero-wall__row') as HTMLElement | null;
+        row?.style.setProperty('translate', `${x * factor * 28}px 0`);
+      });
+    });
+
+    wall.addEventListener('mouseleave', () => {
+      layerEls.forEach((layer) => {
+        const row = layer.querySelector('.hero-wall__row') as HTMLElement | null;
+        row?.style.removeProperty('translate');
+      });
+    });
+  }
+</script>

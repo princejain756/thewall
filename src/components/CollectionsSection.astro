@@ -1,0 +1,254 @@
+---
+import { collections as staticCollections, collectionCoverSrc } from '../data/collections';
+import { listCollections } from '../lib/products';
+
+const dbCollections = await listCollections();
+const countBySlug = Object.fromEntries(dbCollections.map((c) => [c.slug, c.productCount ?? 0]));
+
+const collections = staticCollections.map((item) => {
+  const slug = item.href.replace('/collections/', '');
+  return { ...item, count: countBySlug[slug] ?? item.count ?? 0 };
+});
+---
+
+<section class="collections section section--cream" id="collections">
+  <div class="collections__inner container">
+    <header class="collections__head">
+      <h2 class="collections__title">Collections</h2>
+      <p class="collections__tagline">
+        Your style, your wall <span class="collections__sep" aria-hidden="true">|</span> find the perfect poster sets
+      </p>
+    </header>
+
+    <div class="collections__track-wrap">
+      <div class="collections__track" role="list">
+        {
+          collections.map((item, i) => (
+            <a
+              href={item.href}
+              class="collections__card"
+              role="listitem"
+              style={`--i: ${i}`}
+              aria-label={`${item.label} collection`}
+            >
+              <div class="collections__ring">
+                <div class="collections__thumb">
+                  <img
+                    src={collectionCoverSrc(item)}
+                    alt=""
+                    loading="lazy"
+                    width="120"
+                    height="120"
+                  />
+                </div>
+                <span class="collections__count" aria-hidden="true">{item.count}</span>
+              </div>
+              <span class="collections__label">{item.label}</span>
+            </a>
+          ))
+        }
+
+        <a href="/shop" class="collections__card collections__card--more" style={`--i: ${collections.length}`}>
+          <div class="collections__ring collections__ring--more">
+            <span class="collections__more-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <path d="M11 4V18M4 11H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </span>
+          </div>
+          <span class="collections__label">Explore more</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .collections {
+    padding-block: clamp(2.5rem, 5vw, 4rem) var(--section-pad-y);
+    border-top: 1px solid rgba(139, 26, 16, 0.06);
+  }
+
+  .collections__inner {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  }
+
+  .collections__head {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .collections__title {
+    font-family: var(--sans);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #2a1512;
+  }
+
+  .collections__tagline {
+    font-size: clamp(0.68rem, 1.2vw, 0.78rem);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+
+  .collections__sep {
+    margin-inline: 0.35rem;
+    opacity: 0.4;
+  }
+
+  .collections__track-wrap {
+    overflow-x: auto;
+    overflow-y: visible;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-inline: calc(var(--section-pad-x) * -0.35);
+    padding-inline: var(--section-pad-x);
+    padding-top: 0.5rem;
+  }
+
+  .collections__track-wrap::-webkit-scrollbar {
+    display: none;
+  }
+
+  .collections__track {
+    display: flex;
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: clamp(1.5rem, 3.5vw, 2.75rem);
+    width: max-content;
+    min-width: 100%;
+    padding-block: 0.5rem 1rem;
+  }
+
+  .collections__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    min-width: clamp(96px, 10vw, 124px);
+    opacity: 0;
+    transform: translateY(12px);
+    animation: coll-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation-delay: calc(0.05s + var(--i) * 0.06s);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  @keyframes coll-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .collections__card:hover {
+    transform: translateY(-4px);
+  }
+
+  .collections__ring {
+    position: relative;
+    width: clamp(96px, 12vw, 132px);
+    height: clamp(96px, 12vw, 132px);
+    border-radius: 50%;
+    overflow: hidden;
+    background: transparent;
+    box-shadow: 0 8px 22px rgba(42, 21, 18, 0.12);
+    transition: box-shadow 0.35s ease, transform 0.35s ease;
+  }
+
+  .collections__card:hover .collections__ring {
+    box-shadow: 0 14px 32px rgba(42, 21, 18, 0.16);
+    transform: scale(1.04);
+  }
+
+  .collections__thumb {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    display: block;
+  }
+
+  .collections__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .collections__card:hover .collections__thumb img {
+    transform: scale(1.06);
+  }
+
+  .collections__count {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    min-width: 1.35rem;
+    height: 1.35rem;
+    padding-inline: 0.3rem;
+    border-radius: 999px;
+    background: var(--maroon);
+    color: var(--cream);
+    font-size: 0.52rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    border: 2px solid var(--cream);
+  }
+
+  .collections__label {
+    font-size: clamp(0.72rem, 1.1vw, 0.82rem);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-align: center;
+    color: #1a1a1a;
+    opacity: 0.88;
+    transition: opacity 0.25s ease;
+  }
+
+  .collections__card:hover .collections__label {
+    opacity: 1;
+  }
+
+  .collections__ring--more {
+    display: grid;
+    place-items: center;
+    background: #ececf0;
+    border: 1.5px dashed rgba(42, 21, 18, 0.18);
+    box-shadow: 0 8px 22px rgba(42, 21, 18, 0.1);
+  }
+
+  .collections__more-icon {
+    color: #2a1512;
+    opacity: 0.5;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .collections__card--more:hover .collections__more-icon {
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  @media (max-width: 960px) {
+    .collections__track {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .collections__card {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+</style>

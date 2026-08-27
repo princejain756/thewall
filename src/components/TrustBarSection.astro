@@ -1,0 +1,117 @@
+---
+const items = [
+  { label: 'Curated Collections', icon: 'grid' },
+  { label: 'Premium Quality', icon: 'medal' },
+  { label: 'Secure Payments', icon: 'lock' },
+  { label: 'Made For You', icon: 'phone' },
+  { label: 'Delivered With Care', icon: 'box' },
+] as const;
+---
+
+<section class="trust-bar section section--cream section--compact" id="gifting" aria-label="Why shop with The Wall">
+  <div class="container trust-bar__inner">
+    {
+      items.map((item) => (
+        <div class="trust-bar__item">
+          <span class="trust-bar__icon" aria-hidden="true">
+            {item.icon === 'grid' && (
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect x="5" y="5" width="9" height="9" rx="1" stroke="currentColor" stroke-width="1.2" />
+                <rect x="18" y="5" width="9" height="9" rx="1" stroke="currentColor" stroke-width="1.2" />
+                <rect x="5" y="18" width="9" height="9" rx="1" stroke="currentColor" stroke-width="1.2" />
+                <rect x="18" y="18" width="9" height="9" rx="1" stroke="currentColor" stroke-width="1.2" />
+              </svg>
+            )}
+            {item.icon === 'medal' && (
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="12" r="7" stroke="currentColor" stroke-width="1.2" />
+                <path d="M12.5 19L11 28L16 24.5L21 28L19.5 19" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+              </svg>
+            )}
+            {item.icon === 'lock' && (
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect x="9" y="14" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.2" />
+                <path d="M12 14V11C12 8.24 14.24 6 17 6C19.76 6 22 8.24 22 11V14" stroke="currentColor" stroke-width="1.2" />
+              </svg>
+            )}
+            {item.icon === 'phone' && (
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect x="10" y="5" width="12" height="22" rx="2.5" stroke="currentColor" stroke-width="1.2" />
+                <circle cx="16" cy="23" r="1" fill="currentColor" />
+                <path d="M13 8H19" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+              </svg>
+            )}
+            {item.icon === 'box' && (
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M6 10L16 5L26 10V22L16 27L6 22V10Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                <path d="M16 5V27M6 10L16 15L26 10" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+              </svg>
+            )}
+          </span>
+          <span class="trust-bar__label">{item.label}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .trust-bar {
+    border-top: 1px solid rgba(139, 26, 16, 0.08);
+  }
+
+  .trust-bar__inner {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.8vw, 1.25rem);
+    align-items: start;
+  }
+
+  .trust-bar__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .trust-bar__icon {
+    color: var(--maroon);
+    opacity: 0.88;
+  }
+
+  .trust-bar__icon :global(svg) {
+    width: 26px;
+    height: 26px;
+  }
+
+  .trust-bar__label {
+    font-size: clamp(0.58rem, 1vw, 0.68rem);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--maroon);
+    opacity: 0.82;
+    line-height: 1.35;
+    max-width: 12ch;
+  }
+
+  @media (max-width: 900px) {
+    .trust-bar__inner {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem 1rem;
+    }
+
+    .trust-bar__item:last-child {
+      grid-column: 1 / -1;
+      max-width: 12rem;
+      margin-inline: auto;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .trust-bar__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

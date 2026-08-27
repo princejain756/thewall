@@ -1,8 +1,23 @@
 ---
 import { navigation, getMegaPreviewImages, previewId } from '../data/navigation';
+
+interface Props {
+  searchPage?: boolean;
+  initialQuery?: string;
+}
+
+const { searchPage = false, initialQuery = '' } = Astro.props;
 ---
 
-<header class="nav" data-header>
+<header class:list={['nav', { 'nav--search-page': searchPage }]} data-header>
+  <div
+    class="nav__search-suite"
+    {...(!searchPage && {
+      'data-predictive-search': true,
+      'data-predictive-limit': '6',
+      'data-predictive-variant': 'compact',
+    })}
+  >
   <div class="nav__bar">
     <div class="nav__inner container">
       <a href="/" class="nav__logo" aria-label="the.Wall home">
@@ -27,27 +42,39 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
                 data-nav-type={item.type}
                 data-nav-variant={item.variant ?? 'standard'}
               >
-                <button
-                  type="button"
-                  class="nav__trigger"
-                  role="menuitem"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                  data-nav-trigger
-                  data-index={String(index).padStart(2, '0')}
-                >
-                  <span class="nav__trigger-text">{item.label}</span>
-                  <span class="nav__trigger-line" aria-hidden="true" />
-                  {item.type === 'mega' ? (
-                    <svg class="nav__trigger-icon" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
-                      <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  ) : (
-                    <svg class="nav__trigger-icon nav__trigger-icon--sm" width="6" height="6" viewBox="0 0 6 6" fill="none" aria-hidden="true">
-                      <circle cx="3" cy="3" r="1.2" fill="currentColor" />
-                    </svg>
-                  )}
-                </button>
+                {item.type === 'link' ? (
+                  <a
+                    href={item.href}
+                    class="nav__trigger nav__trigger--link"
+                    role="menuitem"
+                    data-index={String(index).padStart(2, '0')}
+                  >
+                    <span class="nav__trigger-text">{item.label}</span>
+                    <span class="nav__trigger-line" aria-hidden="true" />
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    class="nav__trigger"
+                    role="menuitem"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    data-nav-trigger
+                    data-index={String(index).padStart(2, '0')}
+                  >
+                    <span class="nav__trigger-text">{item.label}</span>
+                    <span class="nav__trigger-line" aria-hidden="true" />
+                    {item.type === 'mega' ? (
+                      <svg class="nav__trigger-icon" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+                        <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    ) : (
+                      <svg class="nav__trigger-icon nav__trigger-icon--sm" width="6" height="6" viewBox="0 0 6 6" fill="none" aria-hidden="true">
+                        <circle cx="3" cy="3" r="1.2" fill="currentColor" />
+                      </svg>
+                    )}
+                  </button>
+                )}
 
                 {item.type === 'mega' && item.groups && item.variant === 'cinematic' && (
                   <div class="nav__panel nav__panel--cinematic" data-nav-panel hidden>
@@ -212,6 +239,30 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
         </ul>
       </nav>
 
+      <button type="button" class="nav__search" data-search-open aria-label="Search products" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M20 20L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <a href="/account" class="nav__account" aria-label="My account">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </a>
+
+      <a href="/cart" class="nav__cart" aria-label="Shopping cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6h15l-1.5 9h-12L6 6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M6 6L5 3H2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="9.5" cy="19.5" r="1.5" fill="currentColor"/>
+          <circle cx="16.5" cy="19.5" r="1.5" fill="currentColor"/>
+        </svg>
+        <span class="nav__cart-count" data-cart-count>0</span>
+      </a>
+
       <button
         type="button"
         class="nav__burger"
@@ -226,6 +277,51 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
         <span class="nav__burger-label">Menu</span>
       </button>
     </div>
+
+    <div class="nav__search-strip">
+      <form class="nav__search-form" method="get" action="/search" role="search" data-search-form>
+        <label class="nav__search-field">
+          <span class="nav__search-leading" aria-hidden="true">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+              <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M20 20L16.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="visually-hidden">Search products</span>
+          <input
+            type="search"
+            name="q"
+            placeholder="Search posters..."
+            class="nav__search-input"
+            data-search-input
+            {...(!searchPage && { 'data-predictive-input': true })}
+            value={initialQuery}
+            autocomplete="off"
+            enterkeyhint="search"
+          />
+          <button type="button" class="nav__search-clear" data-predictive-clear hidden aria-label="Clear search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </label>
+      </form>
+    </div>
+  </div>
+
+  <div class="nav__search-dropdown" data-search-dropdown hidden>
+    <div class="nav__search-dropdown-inner">
+      <div class="nav__search-meta" data-predictive-meta hidden>
+        <p class="nav__search-meta-text">
+          Found <strong data-predictive-count>0</strong> results for '<span data-predictive-query></span>'
+        </p>
+        <a href="/search" class="nav__search-view-all" data-predictive-view-all>View all results →</a>
+      </div>
+      <div class="nav__search-grid" data-predictive-grid role="list"></div>
+      <p class="nav__search-empty" data-predictive-empty hidden>No results found. Try another keyword.</p>
+      <p class="nav__search-loading" data-predictive-loading hidden>Searching...</p>
+    </div>
+  </div>
   </div>
 
   <div class="nav__backdrop" data-nav-backdrop hidden aria-hidden="true" />
@@ -241,50 +337,59 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
     <div class="nav__mobile-body">
       {
         navigation.map((item, i) => (
-          <details class="nav__mobile-item" style={`--i: ${i}`}>
-            <summary class="nav__mobile-summary">
+          item.type === 'link' ? (
+            <a href={item.href} class="nav__mobile-link" style={`--i: ${i}`}>
               <span class="nav__mobile-index">{String(i + 1).padStart(2, '0')}</span>
               <span class="nav__mobile-label serif">{item.label}</span>
-              <span class="nav__mobile-chevron" aria-hidden="true" />
-            </summary>
-            <div class="nav__mobile-panel">
-              {item.type === 'mega' && item.groups ? (
-                item.groups.map((group) => (
-                  <div class="nav__mobile-group">
-                    <span class="nav__mobile-group-title">{group.title}</span>
-                    <ul>
-                      {group.links.map((link) => (
-                        <li>
-                          <a href={link.href}>{link.label}</a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))
-              ) : (
-                <ul class="nav__mobile-flat">
-                  {item.links?.map((link) => (
-                    <li>
-                      <a href={link.href}>{link.label}</a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </details>
+            </a>
+          ) : (
+            <details class="nav__mobile-item" style={`--i: ${i}`}>
+              <summary class="nav__mobile-summary">
+                <span class="nav__mobile-index">{String(i + 1).padStart(2, '0')}</span>
+                <span class="nav__mobile-label serif">{item.label}</span>
+                <span class="nav__mobile-chevron" aria-hidden="true" />
+              </summary>
+              <div class="nav__mobile-panel">
+                {item.type === 'mega' && item.groups ? (
+                  item.groups.map((group) => (
+                    <div class="nav__mobile-group">
+                      <span class="nav__mobile-group-title">{group.title}</span>
+                      <ul>
+                        {group.links.map((link) => (
+                          <li>
+                            <a href={link.href}>{link.label}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))
+                ) : (
+                  <ul class="nav__mobile-flat">
+                    {item.links?.map((link) => (
+                      <li>
+                        <a href={link.href}>{link.label}</a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </details>
+          )
         ))
       }
     </div>
     <div class="nav__mobile-foot">
       <p class="nav__mobile-tagline serif">A place where memories become wall-worthy.</p>
-      <a href="#memories" class="nav__mobile-cta">Create Your Memory Album →</a>
+      <a href="/#custom-made" class="nav__mobile-cta">Create Your Design →</a>
     </div>
   </div>
 </header>
 
 <style>
   .nav {
-    --nav-h: 68px;
+    --nav-bar-h: 68px;
+    --nav-search-h: 0px;
+    --nav-h: var(--nav-bar-h);
     --panel-ease: cubic-bezier(0.22, 1, 0.36, 1);
     position: sticky;
     top: 0;
@@ -293,10 +398,16 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
     overflow-x: clip;
   }
 
+  @media (max-width: 1120px) {
+    .nav {
+      --nav-search-h: 44px;
+      --nav-h: calc(var(--nav-bar-h) + var(--nav-search-h));
+    }
+  }
+
   .nav__bar {
     position: relative;
     z-index: 202;
-    height: var(--nav-h);
     background: var(--maroon);
     color: var(--cream);
     border-bottom: 1px solid rgba(245, 241, 230, 0.06);
@@ -319,7 +430,7 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    height: 100%;
+    height: var(--nav-bar-h);
     width: 100%;
     max-width: 100%;
   }
@@ -348,6 +459,292 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
     flex: 1;
     display: flex;
     justify-content: center;
+  }
+
+  .nav__trigger--link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .nav__search {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+    padding: 0.35rem;
+    flex-shrink: 0;
+  }
+
+  .nav__search:hover {
+    opacity: 1;
+  }
+
+  .nav__search-suite {
+    position: relative;
+  }
+
+  .nav--search-page .nav__search-dropdown {
+    display: none !important;
+  }
+
+  .nav__search-panel {
+    display: none;
+  }
+
+  .nav__search-strip {
+    display: none;
+    padding: 0 var(--section-pad-x) 0.4rem;
+    background: var(--maroon);
+  }
+
+  .nav__search-form {
+    width: 100%;
+  }
+
+  .nav__search-field {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0 0.75rem;
+    min-height: 36px;
+    width: 100%;
+  }
+
+  .nav__search-leading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--maroon);
+    opacity: 0.42;
+  }
+
+  .nav__search-input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    font: inherit;
+    font-size: 0.84rem;
+    color: var(--maroon);
+    padding: 0.45rem 0;
+  }
+
+  .nav__search-input::placeholder {
+    color: rgba(139, 26, 16, 0.38);
+  }
+
+  .nav__search-input:focus {
+    outline: none;
+  }
+
+  .nav__search-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+
+  .nav__search-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    color: var(--maroon);
+    opacity: 0.4;
+    transition: opacity 0.2s ease;
+  }
+
+  .nav__search-clear:hover {
+    opacity: 0.75;
+  }
+
+  .nav__search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 201;
+    background: var(--cream);
+    border-bottom: 1px solid rgba(139, 26, 16, 0.08);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+    max-height: min(50vh, 360px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav__search-dropdown[hidden] {
+    display: none !important;
+  }
+
+  .nav__search-dropdown-inner {
+    padding: 0.5rem var(--section-pad-x) 0.65rem;
+  }
+
+  .nav__search-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0 0 0.45rem;
+    margin-bottom: 0.45rem;
+    border-bottom: 1px solid rgba(139, 26, 16, 0.08);
+  }
+
+  .nav__search-meta[hidden],
+  .nav__search-empty[hidden],
+  .nav__search-loading[hidden] {
+    display: none !important;
+  }
+
+  .nav__search-meta-text {
+    font-size: 0.7rem;
+    opacity: 0.75;
+    min-width: 0;
+  }
+
+  .nav__search-meta-text strong {
+    font-weight: 700;
+    color: var(--maroon);
+  }
+
+  .nav__search-view-all {
+    flex-shrink: 0;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--maroon);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav__search-view-all:hover {
+    text-decoration: underline;
+  }
+
+  .nav__search-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .nav__search-empty,
+  .nav__search-loading {
+    font-size: 0.75rem;
+    opacity: 0.65;
+    padding: 0.75rem 0;
+    text-align: center;
+  }
+
+  @media (max-width: 1120px) {
+    .nav__search-strip {
+      display: block;
+    }
+
+    .nav__search {
+      display: none;
+    }
+
+    .nav__search-dropdown {
+      max-height: min(38vh, 280px);
+    }
+  }
+
+  @media (min-width: 1121px) {
+    .nav.is-search-active .nav__search-strip {
+      display: block;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      padding: 0.65rem var(--section-pad-x);
+      background: var(--cream);
+      border-bottom: 1px solid rgba(139, 26, 16, 0.08);
+      z-index: 3;
+    }
+
+    .nav__search-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.85rem 0.75rem;
+    }
+
+    .nav__search-dropdown {
+      max-height: min(55vh, 420px);
+    }
+
+    .nav__search-dropdown-inner {
+      padding: 0.65rem var(--section-pad-x) 0.85rem;
+    }
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .nav__account {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+    padding: 0.35rem;
+  }
+
+  .nav__account:hover {
+    opacity: 1;
+  }
+
+  .nav__cart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: var(--cream);
+    flex-shrink: 0;
+    margin-right: 0.25rem;
+    transition: opacity var(--transition);
+  }
+
+  .nav__cart:hover {
+    opacity: 0.85;
+  }
+
+  .nav__cart-count {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background: var(--cream);
+    color: var(--maroon);
+    font-size: 0.6rem;
+    font-weight: 700;
+    border-radius: 8px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .nav__cart-count.is-visible {
+    display: flex;
   }
 
   .nav__list {
@@ -1000,6 +1397,7 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
     z-index: 203;
     background: var(--maroon);
     color: var(--cream);
+    font-family: var(--serif);
     display: flex;
     flex-direction: column;
     opacity: 0;
@@ -1029,9 +1427,10 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
   }
 
   .nav__mobile-eyebrow {
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.2em;
+    font-family: var(--serif);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     opacity: 0.5;
   }
@@ -1072,6 +1471,23 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
     animation: none;
   }
 
+  .nav__mobile-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid rgba(245, 241, 230, 0.08);
+    color: inherit;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: none;
+  }
+
+  .nav.is-mobile-open .nav__mobile-link {
+    animation: mobileIn 0.5s var(--panel-ease) forwards;
+    animation-delay: calc(0.06s + var(--i) * 0.05s);
+  }
+
   .nav.is-mobile-open .nav__mobile-item {
     animation: mobileIn 0.5s var(--panel-ease) forwards;
     animation-delay: calc(0.06s + var(--i) * 0.05s);
@@ -1098,18 +1514,23 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
   }
 
   .nav__mobile-index {
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    opacity: 0.35;
+    font-family: var(--serif);
+    font-size: 0.65rem;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 0.06em;
+    opacity: 0.38;
     min-width: 1.5rem;
   }
 
   .nav__mobile-label {
     flex: 1;
-    font-size: 1.35rem;
+    font-family: var(--serif);
+    font-size: 1.4rem;
     font-weight: 500;
     font-style: italic;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
   }
 
   .nav__mobile-chevron {
@@ -1148,11 +1569,12 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
 
   .nav__mobile-group-title {
     display: block;
-    font-size: 0.58rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    opacity: 0.4;
+    font-family: var(--serif);
+    font-size: 0.62rem;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 0.1em;
+    opacity: 0.45;
     margin-bottom: 0.5rem;
   }
 
@@ -1165,7 +1587,9 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
 
   .nav__mobile-group a,
   .nav__mobile-flat a {
-    font-size: 0.88rem;
+    font-family: var(--serif);
+    font-size: 0.92rem;
+    font-weight: 400;
     opacity: 0.82;
     padding: 0.2rem 0;
     transition: opacity 0.2s ease, padding-left 0.25s ease;
@@ -1186,17 +1610,21 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
   }
 
   .nav__mobile-tagline {
-    font-size: 1rem;
+    font-family: var(--serif);
+    font-size: 1.05rem;
     font-style: italic;
+    font-weight: 400;
     opacity: 0.7;
     max-width: 28ch;
+    line-height: 1.45;
   }
 
   .nav__mobile-cta {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-family: var(--serif);
+    font-size: 0.72rem;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 0.06em;
     opacity: 0.9;
   }
 
@@ -1262,6 +1690,10 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
   const mobile = document.querySelector('[data-nav-mobile]');
   const burger = document.querySelector('[data-nav-burger]');
   const closeBtn = document.querySelector('[data-nav-close]');
+  const searchOpenBtn = document.querySelector('[data-search-open]');
+  const searchDropdown = document.querySelector('[data-search-dropdown]');
+  const searchForm = document.querySelector('[data-search-form]');
+  const searchInput = document.querySelector('[data-search-input]') as HTMLInputElement | null;
   const items = document.querySelectorAll('[data-nav-item]');
 
   let activeItem: Element | null = null;
@@ -1381,10 +1813,79 @@ import { navigation, getMegaPreviewImages, previewId } from '../data/navigation'
     if (e.key === 'Escape') {
       closeAll();
       closeMobile();
+      closeSearch();
     }
   });
 
+  const isMobileNav = () => window.matchMedia('(max-width: 1120px)').matches;
+
+  const showSearchDropdown = () => {
+    searchDropdown?.removeAttribute('hidden');
+    header?.classList.add('is-search-active');
+    searchOpenBtn?.setAttribute('aria-expanded', 'true');
+  };
+
+  const hideSearchDropdown = () => {
+    searchDropdown?.setAttribute('hidden', '');
+    header?.classList.remove('is-search-active');
+    searchOpenBtn?.setAttribute('aria-expanded', 'false');
+  };
+
+  const clearSearchDropdown = () => {
+    if (searchInput) searchInput.value = '';
+    searchDropdown?.querySelector('[data-predictive-clear]')?.setAttribute('hidden', '');
+    searchDropdown?.querySelector('[data-predictive-grid]')?.replaceChildren();
+    searchDropdown?.querySelector('[data-predictive-meta]')?.setAttribute('hidden', '');
+    searchDropdown?.querySelector('[data-predictive-empty]')?.setAttribute('hidden', '');
+    searchDropdown?.querySelector('[data-predictive-loading]')?.setAttribute('hidden', '');
+  };
+
+  const closeSearch = () => {
+    hideSearchDropdown();
+    clearSearchDropdown();
+    searchInput?.blur();
+  };
+
+  searchInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const q = searchInput.value.trim();
+      if (q && window.location.pathname !== '/search') {
+        window.location.href = `/search?q=${encodeURIComponent(q)}`;
+      }
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!header?.classList.contains('is-search-active')) return;
+    const target = e.target as Node;
+    if (header.contains(target)) return;
+    closeSearch();
+  });
+
+  searchOpenBtn?.addEventListener('click', () => {
+    if (isMobileNav() || window.location.pathname === '/search') {
+      searchInput?.focus();
+      return;
+    }
+    if (header?.classList.contains('is-search-active')) {
+      closeSearch();
+    } else {
+      closeAll();
+      closeMobile();
+      showSearchDropdown();
+      requestAnimationFrame(() => searchInput?.focus());
+    }
+  });
+
+  searchForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const q = searchInput?.value.trim();
+    if (q) window.location.href = `/search?q=${encodeURIComponent(q)}`;
+  });
+
   const openMobile = () => {
+    closeSearch();
     header?.classList.add('is-mobile-open');
     burger?.setAttribute('aria-expanded', 'true');
     mobile?.removeAttribute('hidden');

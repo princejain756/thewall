@@ -1,0 +1,154 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getOrderByIdPublic } from '../../lib/orders';
+import { formatPrice } from '../../lib/db';
+
+const orderId = Astro.url.searchParams.get('id');
+const orderNum = Astro.url.searchParams.get('num');
+
+let order = null;
+if (orderId) {
+  order = await getOrderByIdPublic(orderId);
+}
+---
+
+<Layout title="Order Confirmed — The Wall Records">
+  <Header />
+  <main class="success-page">
+    <div class="success-page__inner">
+      <div class="success-page__icon">✓</div>
+      <h1 class="heading-serif">thank you!</h1>
+      <p class="success-page__subtitle body-text">
+        Your order has been placed successfully.
+        {orderNum && <> Order <strong>{orderNum}</strong></>}
+      </p>
+
+      {order && (
+        <div class="success-page__details">
+          <div class="success-row">
+            <span>Total</span>
+            <strong>{formatPrice(order.total)}</strong>
+          </div>
+          <div class="success-row">
+            <span>Payment</span>
+            <span>{order.paymentStatus === 'paid' ? 'Paid ✓' : 'Pending (COD)'}</span>
+          </div>
+          <div class="success-row">
+            <span>Delivery</span>
+            <span>5–7 business days</span>
+          </div>
+          {order.items?.length > 0 && (
+            <div class="success-items">
+              {order.items.map((item) => (
+                <div class="success-item">
+                  <span>{item.title}</span>
+                  <span>{item.size} × {item.quantity}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <p class="success-page__note">
+        We'll send order updates to your email and WhatsApp.
+      </p>
+
+      <div class="success-page__actions">
+        <a href="/shop" class="btn btn--maroon">Continue Shopping</a>
+        <a href="/" class="success-page__home">Back to Home</a>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .success-page {
+    padding: 0.75rem var(--section-pad-x) var(--section-pad-y);
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .success-page__inner {
+    max-width: 480px;
+    text-align: center;
+  }
+
+  .success-page__icon {
+    width: 64px;
+    height: 64px;
+    background: #2d6a4f;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin: 0 auto 1.5rem;
+  }
+
+  .success-page h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .success-page__subtitle {
+    margin-bottom: 2rem;
+    opacity: 0.8;
+  }
+
+  .success-page__details {
+    background: #fff;
+    border: 1px solid var(--cream-dark);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+
+  .success-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .success-row:last-of-type { border-bottom: none; }
+
+  .success-items {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--cream-dark);
+  }
+
+  .success-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    padding: 0.35rem 0;
+    opacity: 0.8;
+  }
+
+  .success-page__note {
+    font-size: 0.85rem;
+    opacity: 0.65;
+    margin-bottom: 2rem;
+  }
+
+  .success-page__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .success-page__home {
+    font-size: 0.85rem;
+    opacity: 0.7;
+  }
+</style>

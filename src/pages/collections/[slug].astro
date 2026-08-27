@@ -1,0 +1,145 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { getCollectionBySlug, listProducts } from '../../lib/products';
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect('/');
+
+const collection = await getCollectionBySlug(slug);
+if (!collection) return Astro.redirect('/404');
+
+const products = await listProducts({ collection: collection.id, limit: 100 });
+---
+
+<Layout title={`${collection.name} — The Wall Records`}>
+  <Header />
+  <main class="collection-page">
+    <div class="collection-page__hero">
+      {collection.image && (
+        <img src={collection.image} alt={collection.name} class="collection-page__hero-img" width="200" height="280" />
+      )}
+      <div>
+        <span class="label">Collection</span>
+        <h1 class="heading-serif">{collection.name}</h1>
+        <p class="body-text">{collection.description}</p>
+        <p class="collection-page__count">{products.length} posters</p>
+      </div>
+    </div>
+
+    <div class="collection-page__grid">
+      {products.map((product) => (
+        <ProductCard product={product} />
+      ))}
+    </div>
+
+    {products.length === 0 && (
+      <p class="collection-page__empty">No products in this collection yet.</p>
+    )}
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .collection-page {
+    padding: 0.75rem var(--section-pad-x) var(--section-pad-y);
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  @media (min-width: 769px) {
+    .collection-page {
+      padding-top: 1.5rem;
+    }
+  }
+
+  .collection-page__hero {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .collection-page__hero-img {
+    width: 120px;
+    height: 168px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  .collection-page__hero h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin: 0.25rem 0 0.5rem;
+  }
+
+  .collection-page__count {
+    font-size: 0.85rem;
+    opacity: 0.6;
+    margin-top: 0.5rem;
+  }
+
+  .collection-page__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem 1.5rem;
+  }
+
+  .collection-page__empty {
+    text-align: center;
+    padding: 4rem;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 640px) {
+    .collection-page__hero {
+      flex-direction: column;
+      text-align: center;
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+    }
+
+    .collection-page__hero-img {
+      width: 88px;
+      height: 123px;
+    }
+
+    .collection-page__hero h1 {
+      font-size: clamp(1.65rem, 7vw, 2.25rem);
+    }
+
+    .collection-page__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem 0.65rem;
+    }
+
+    .collection-page__grid :global(.product-card__title) {
+      font-size: 0.78rem;
+      margin-bottom: 0.25rem;
+      -webkit-line-clamp: 2;
+    }
+
+    .collection-page__grid :global(.product-card__price) {
+      font-size: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+
+    .collection-page__grid :global(.product-card__image-wrap) {
+      margin-bottom: 0.5rem;
+      border-radius: 3px;
+    }
+
+    .collection-page__grid :global(.product-card__badge) {
+      font-size: 0.58rem;
+      padding: 0.15rem 0.35rem;
+      top: 0.35rem;
+      left: 0.35rem;
+    }
+  }
+</style>

@@ -1,0 +1,1578 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { getProductBySlug, listProducts, parseImages } from '../../lib/products';
+import { formatPrice } from '../../lib/db';
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect('/collections/aesthetic');
+
+const product = await getProductBySlug(slug);
+if (!product) return Astro.redirect('/404');
+
+const isCustom = product.productType === 'custom' || product.slug === 'best-sister-timeless' || product.slug.includes('memory');
+const images = parseImages(product.images);
+const defaultMainImage = images[0] || (isCustom ? '/images/custom-made/memory-poster.png' : '/logo.png');
+
+const related = (await listProducts({ collection: product.collectionId || undefined, limit: 8 }))
+  .filter((p) => p.id !== product.id)
+  .slice(0, 4);
+
+const comboOffers = [
+  { tier: 'Buy 4, get 3 free', rate: '≈ ₹68 each', detail: '7 posters for the price of 4' },
+  { tier: 'Buy 5, get 5 free', rate: '≈ ₹60 each', detail: '10 posters for the price of 5' },
+  { tier: 'Buy 6, get 12 free', rate: '≈ ₹40 each', detail: '18 posters for the price of 6' },
+  { tier: 'Buy 10, get 26 free', rate: '≈ ₹33 each', detail: '36 posters for the price of 10' },
+];
+
+const customGalleryThumbs = [
+  { src: images[0] || '/images/custom-made/memory-poster.png', label: 'Cover Mockup' },
+  { src: images[1] || '/images/custom-made/album.png', label: 'Angled Book' },
+  { src: images[2] || '/images/custom-made/framed-wall-art.jpg', label: 'Wall Context' },
+  { src: images[3] || '/images/custom-made/polaroids.png', label: 'Detail View' },
+];
+---
+
+<Layout title={`${product.title} — The Wall Records`}>
+  <Header />
+  <main class={`pdp ${isCustom ? 'pdp--custom' : ''}`}>
+    <nav class="pdp__breadcrumb">
+      <a href="/">Home</a>
+      <span>/</span>
+      {isCustom ? (
+        <>
+          <a href="/#custom-made">Custom Made</a>
+          <span>/</span>
+        </>
+      ) : product.collectionName ? (
+        <>
+          <a href={`/collections/${product.collectionName.toLowerCase().replace(/\s+/g, '-')}`}>{product.collectionName}</a>
+          <span>/</span>
+        </>
+      ) : null}
+      <span>{product.title}</span>
+    </nav>
+
+    {isCustom ? (
+      /* ─── ODD GIRAFFE STYLE CUSTOMIZER PDP ─── */
+      <div class="custom-pdp">
+        <div class="custom-pdp__stage">
+          <!-- Gallery Thumbs -->
+          <div class="custom-pdp__thumbs" role="tablist" aria-label="Mockup angles">
+            {customGalleryThumbs.map((thumb, idx) => (
+              <button
+                type="button"
+                class={`custom-pdp__thumb ${idx === 0 ? 'custom-pdp__thumb--active' : ''}`}
+                data-thumb-src={thumb.src}
+                aria-label={thumb.label}
+              >
+                <img src={thumb.src} alt="" width="68" height="84" loading="lazy" />
+              </button>
+            ))}
+          </div>
+
+          <!-- Main Interactive Mockup -->
+          <div class="custom-mockup-wrapper">
+            <div class="custom-mockup" id="mockup-canvas" data-theme="cream">
+              <div class="custom-mockup__book">
+                <div class="custom-mockup__cover">
+                  <!-- User Photo inside template frame -->
+                  <div class="custom-mockup__photo-container" id="mockup-photo-container">
+                    <img
+                      id="mockup-photo"
+                      src={images[0] || '/images/custom-made/memory-poster.png'}
+                      alt="Custom photo preview"
+                    />
+                    <div class="custom-mockup__photo-placeholder" id="photo-placeholder" hidden>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                        <polyline points="21 15 16 10 5 21"/>
+                      </svg>
+                      <span>Click or drop photo here</span>
+                    </div>
+                  </div>
+
+                  <!-- Overlay Typography (Odd Giraffe style) -->
+                  <div class="custom-mockup__overlay" id="mockup-overlay">
+                    <span class="custom-mockup__overlay-top" id="overlay-top-text">
+                      {product.slug.includes('sister') ? 'best' : 'timeless'}
+                    </span>
+                    <span class="custom-mockup__overlay-main" id="overlay-main-text">
+                      {product.slug.includes('sister') ? 'sister' : 'memories'}
+                    </span>
+                    <span class="custom-mockup__overlay-bottom" id="overlay-bottom-text">
+                      {product.slug.includes('sister') ? 'HAPPY RAKSHABANDHAN' : 'YOUR STORY FRAMED'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick action floating on mockup -->
+              <label class="custom-mockup__quick-upload" for="custom-file-input">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                </svg>
+                <span>Upload / Change Photo</span>
+              </label>
+            </div>
+            <p class="custom-mockup__hint">Live Mockup Preview · High-Resolution 300 DPI Archival Matte Finish</p>
+          </div>
+        </div>
+
+        <!-- Customizer Controls -->
+        <div class="custom-pdp__controls">
+          <span class="custom-pdp__eyebrow">Custom Memory Poster</span>
+
+          <h1 class="custom-pdp__title heading-serif">{product.title}</h1>
+
+          <div class="custom-pdp__rating-bar">
+            <div class="custom-pdp__stars" aria-hidden="true">★★★★★</div>
+            <span class="custom-pdp__review-count">1,356 reviews</span>
+            <span class="custom-pdp__sep">·</span>
+            <span class="custom-pdp__rating-tag">Rated 4.8 / 5</span>
+          </div>
+
+          <!-- Price -->
+          <div class="custom-pdp__price-wrap">
+            <span class="custom-pdp__price" id="display-price">{formatPrice(product.variants[0]?.price || 7900)}</span>
+            <span class="custom-pdp__compare" id="compare-price">{formatPrice(product.variants[0]?.compareAtPrice || 14900)}</span>
+            <span class="custom-pdp__badge">50% Off</span>
+          </div>
+
+          <p class="custom-pdp__tax-note">Taxes included. Free Express Shipping on prepaid orders.</p>
+
+          <!-- Format Selector -->
+          <div class="custom-pdp__option-group">
+            <label class="custom-pdp__option-label" for="format-select">Format</label>
+            <div class="custom-pdp__select-wrap">
+              <select id="format-select" class="custom-pdp__select">
+                <option value="Square" selected>Square (8.5" × 8.5")</option>
+                <option value="Portrait A4">Portrait (A4 / A5 Standard)</option>
+                <option value="Framed Hardcover">Hardcover Matte Print</option>
+                <option value="Gallery Frame">Gallery Framed Poster</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Size Selector -->
+          <div class="custom-pdp__option-group">
+            <div class="custom-pdp__label-row">
+              <label class="custom-pdp__option-label" for="size-select">Size</label>
+              <span class="custom-pdp__size-guide-link" id="view-size-guide">A4 & A5 Dimensions</span>
+            </div>
+            <div class="custom-pdp__size-buttons" id="size-options">
+              {product.variants.map((v, i) => (
+                <button
+                  type="button"
+                  class={`custom-size-pill ${i === 0 ? 'custom-size-pill--active' : ''}`}
+                  data-size={v.size}
+                  data-price={v.price}
+                  data-compare={v.compareAtPrice || ''}
+                  data-variant-id={v.id}
+                >
+                  <span class="custom-size-pill__name">{v.size}</span>
+                  <span class="custom-size-pill__dim">
+                    {v.size === 'A4' ? '8.3" × 11.7"' : v.size === 'A5' ? '5.8" × 8.3"' : v.size === 'Square' ? '8.5" × 8.5"' : '11.7" × 16.5"'}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <!-- Color Theme Swatches -->
+          <div class="custom-pdp__option-group">
+            <label class="custom-pdp__option-label">Color Theme</label>
+            <div class="custom-pdp__color-swatches" id="color-swatches">
+              <button
+                type="button"
+                class="custom-swatch custom-swatch--active"
+                data-color-name="Cream White"
+                data-theme="cream"
+                style="background-color: #fffaf2;"
+                title="Cream White"
+                aria-label="Cream White"
+              />
+              <button
+                type="button"
+                class="custom-swatch"
+                data-color-name="Terracotta Peach"
+                data-theme="terracotta"
+                style="background-color: #f59c7a;"
+                title="Terracotta Peach"
+                aria-label="Terracotta Peach"
+              />
+              <button
+                type="button"
+                class="custom-swatch"
+                data-color-name="Sage Green"
+                data-theme="sage"
+                style="background-color: #d4ebd0;"
+                title="Sage Green"
+                aria-label="Sage Green"
+              />
+              <button
+                type="button"
+                class="custom-swatch"
+                data-color-name="Charcoal Noir"
+                data-theme="charcoal"
+                style="background-color: #1f2421;"
+                title="Charcoal Noir"
+                aria-label="Charcoal Noir"
+              />
+            </div>
+            <span class="custom-pdp__color-name" id="selected-color-name">Cream White</span>
+          </div>
+
+          <!-- Custom Photo Upload Dropzone -->
+          <div class="custom-pdp__upload-box" id="upload-box">
+            <input
+              type="file"
+              id="custom-file-input"
+              accept="image/jpeg,image/png,image/webp,image/heic"
+              style="display:none;"
+            />
+            <div class="custom-pdp__upload-inner" id="upload-dropzone">
+              <div class="custom-pdp__upload-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </div>
+              <div class="custom-pdp__upload-text">
+                <strong id="upload-status-title">Upload your photo for A4 / A5 mockup</strong>
+                <span id="upload-status-desc">Click to browse or drag & drop (JPG, PNG, HEIC up to 25MB)</span>
+              </div>
+              <button type="button" class="btn btn--outline custom-pdp__upload-btn" id="trigger-upload-btn">
+                Browse Photo
+              </button>
+            </div>
+            <div class="custom-pdp__upload-preview-bar" id="upload-preview-bar" style="display: none;">
+              <img id="upload-preview-thumb" src="/images/custom-made/memory-poster.png" alt="" />
+              <div class="custom-pdp__upload-file-meta">
+                <strong id="upload-filename">photo.jpg</strong>
+                <span>Photo ready for high-definition printing</span>
+              </div>
+              <button type="button" class="custom-pdp__upload-remove" id="remove-uploaded-photo">Remove</button>
+            </div>
+          </div>
+
+          <!-- CTA / Add to Cart -->
+          <div class="custom-pdp__cta-wrap">
+            <button type="button" class="btn btn--primary custom-pdp__main-cta" id="start-creating-btn">
+              Start Creating
+            </button>
+            <button type="button" class="btn btn--outline custom-pdp__buy-now" id="buy-now">
+              Buy It Now
+            </button>
+          </div>
+
+          <!-- Delivery Badge -->
+          <div class="custom-pdp__delivery-card">
+            <div class="custom-pdp__delivery-head">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="1" y="3" width="15" height="13"/>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+              <strong>Fast Dispatch (24–48 Hours)</strong>
+            </div>
+            <p>Every product is custom-printed to order with care. Printed on ultra-thick 300 GSM archival matte paper with anti-glare coating.</p>
+          </div>
+
+          <!-- Accordions -->
+          <details class="pdp__accordion" open>
+            <summary>Template & Upload Guidelines</summary>
+            <div class="pdp__description body-text">
+              <p><strong>A4 Size:</strong> 2480 × 3508 px @ 300 DPI</p>
+              <p><strong>A5 Size:</strong> 1748 × 2480 px @ 300 DPI</p>
+              <p><strong>Square Size:</strong> 2550 × 2550 px @ 300 DPI</p>
+              <p>For custom designer templates, provide PNG-24 with a transparent cutout window for the photo placeholder. sRGB color profile recommended.</p>
+            </div>
+          </details>
+
+          <details class="pdp__accordion">
+            <summary>Product Description & Quality</summary>
+            <div class="pdp__description body-text">
+              {(product.description || '').split('\n\n').map((para: string) => (
+                <p>{para}</p>
+              ))}
+            </div>
+          </details>
+
+          <details class="pdp__accordion">
+            <summary>Shipping & Returns</summary>
+            <div class="pdp__description body-text">
+              <p><strong>Free Express Shipping:</strong> Available on all prepaid orders (3–4 days transit time).</p>
+              <p><strong>Secure Packaging:</strong> Ships flat or in heavy-duty triangular kraft tubes with corner guards to prevent creasing.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    ) : (
+      /* ─── STANDARD POSTER PDP ─── */
+      <div class="pdp__grid">
+        <div class="pdp__gallery">
+          <div class="pdp__main-image">
+            <img id="main-image" src={defaultMainImage} alt={product.title} width="360" height="504" />
+          </div>
+          {images.length > 0 && (
+            <div class="pdp__thumbs" role="tablist" aria-label="Product images">
+              {images.map((img: string, i: number) => (
+                <button type="button" class={`pdp__thumb ${i === 0 ? 'pdp__thumb--active' : ''}`} data-image={img} aria-label={`View image ${i + 1}`}>
+                  <img src={img} alt="" width="80" height="112" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div class="pdp__info">
+          <div class="pdp__reviews">
+            <span class="pdp__rating">4.9</span>
+            <span class="pdp__reviews-sep" aria-hidden="true">·</span>
+            <span class="pdp__reviews-count">1,000+ reviews</span>
+          </div>
+
+          <h1 class="pdp__title heading-serif">{product.title}</h1>
+
+          <div class="pdp__price-block">
+            <span class="pdp__price" id="display-price">{formatPrice(product.variants[0]?.price || product.minPrice)}</span>
+            {product.onSale && product.variants[0]?.compareAtPrice && (
+              <span class="pdp__compare-price" id="compare-price">{formatPrice(product.variants[0].compareAtPrice)}</span>
+            )}
+            {product.onSale && <span class="pdp__sale-badge">Sale</span>}
+          </div>
+
+          <p class="pdp__tax-note">Taxes included. Shipping calculated at checkout.</p>
+
+          <div class="pdp__variant">
+            <label class="label">Size</label>
+            <div class="pdp__size-options" id="size-options">
+              {product.variants.map((v, i) => (
+                <button
+                  class={`pdp__size-btn ${i === 0 ? 'pdp__size-btn--active' : ''}`}
+                  data-size={v.size}
+                  data-price={v.price}
+                  data-compare={v.compareAtPrice || ''}
+                  data-variant-id={v.id}
+                >
+                  {v.size}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <details class="pdp__offers">
+            <summary class="pdp__offers-summary">
+              <span class="label">Bundle savings</span>
+              <span class="pdp__offers-lead">Mix any designs — applied at checkout</span>
+            </summary>
+            <ul class="pdp__offers-list">
+              {comboOffers.map((offer) => (
+                <li class="pdp__offer">
+                  <div class="pdp__offer-main">
+                    <span class="pdp__offer-tier">{offer.tier}</span>
+                    <span class="pdp__offer-rate">{offer.rate}</span>
+                  </div>
+                  <span class="pdp__offer-detail">{offer.detail}</span>
+                </li>
+              ))}
+            </ul>
+          </details>
+
+          <div class="pdp__actions">
+            <div class="pdp__qty">
+              <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
+              <input type="number" id="qty-input" value="1" min="1" max="99" aria-label="Quantity" />
+              <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
+            </div>
+            <button type="button" class="btn btn--maroon pdp__add-cart" id="add-to-cart">
+              Add to cart
+            </button>
+          </div>
+          <button type="button" class="btn btn--outline pdp__buy-now" id="buy-now">
+            Buy it now
+          </button>
+
+          <details class="pdp__accordion">
+            <summary>Product Description +</summary>
+            <div class="pdp__description body-text">
+              {(product.description || '').split('\n\n').map((para: string) => (
+                <p>{para}</p>
+              ))}
+            </div>
+          </details>
+
+          <details class="pdp__accordion">
+            <summary>Shipping & Processing</summary>
+            <div class="pdp__description body-text">
+              <p><strong>Free Express Shipping</strong> for all prepaid orders (3-4 days transit).</p>
+              <p>Standard shipping for COD orders (7-8 days transit).</p>
+              <p>Print-on-demand — 1-2 business days processing time.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    )}
+
+    {related.length > 0 && (
+      <section class="pdp__related">
+        <h2 class="heading-serif">You may also like</h2>
+        <div class="pdp__related-grid">
+          {related.map((p) => <ProductCard product={p} />)}
+        </div>
+      </section>
+    )}
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .pdp {
+    padding: 0.75rem var(--section-pad-x) var(--section-pad-y);
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  @media (min-width: 769px) {
+    .pdp {
+      padding-top: 1.5rem;
+    }
+  }
+
+  .pdp__breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    margin-bottom: 1.25rem;
+    opacity: 0.7;
+  }
+
+  .pdp__breadcrumb a:hover { opacity: 1; text-decoration: underline; }
+
+  /* ─── ODD GIRAFFE CUSTOMIZER PDP LAYOUT ─── */
+  .custom-pdp {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: clamp(2rem, 4.5vw, 4rem);
+    align-items: start;
+    margin-bottom: 3rem;
+  }
+
+  .custom-pdp__stage {
+    display: flex;
+    gap: 1.25rem;
+    position: sticky;
+    top: calc(var(--nav-h) + 1rem);
+  }
+
+  .custom-pdp__thumbs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .custom-pdp__thumb {
+    width: 68px;
+    height: 86px;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #f0ebe0;
+    padding: 0;
+    transition: all 0.2s ease;
+  }
+
+  .custom-pdp__thumb:hover {
+    border-color: rgba(139, 26, 16, 0.4);
+  }
+
+  .custom-pdp__thumb--active {
+    border-color: #1a1a1a;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  }
+
+  .custom-pdp__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .custom-mockup-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .custom-mockup {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1.08;
+    background-color: #fffaf2;
+    border-radius: 12px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    transition: background-color 0.35s ease;
+    overflow: hidden;
+  }
+
+  .custom-mockup[data-theme="cream"] { background-color: #fffaf2; }
+  .custom-mockup[data-theme="terracotta"] { background-color: #fcece4; }
+  .custom-mockup[data-theme="sage"] { background-color: #edf6ec; }
+  .custom-mockup[data-theme="charcoal"] { background-color: #2b2b2b; }
+
+  .custom-mockup__book {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    aspect-ratio: 1 / 1;
+    box-shadow: 0 16px 32px rgba(0,0,0,0.16);
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .custom-mockup__cover {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .custom-mockup__photo-container {
+    position: absolute;
+    inset: 12%;
+    border-radius: 2px;
+    overflow: hidden;
+    background: #e9e4dc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+
+  .custom-mockup__photo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .custom-mockup__photo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: #8b1a10;
+    opacity: 0.7;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  /* Overlay text */
+  .custom-mockup__overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 6% 8%;
+    text-align: center;
+    z-index: 10;
+  }
+
+  .custom-mockup__overlay-top {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 700;
+    color: #274c3d;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.7);
+  }
+
+  .custom-mockup__overlay-main {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.4rem, 6.2vw, 4.2rem);
+    font-weight: 700;
+    color: #274c3d;
+    line-height: 0.85;
+    letter-spacing: -0.02em;
+    text-shadow: 0 1px 2px rgba(255,255,255,0.7);
+    margin-top: auto;
+    margin-bottom: 0.5rem;
+  }
+
+  .custom-mockup__overlay-bottom {
+    font-family: 'Montserrat', system-ui, sans-serif;
+    font-size: clamp(0.55rem, 1vw, 0.7rem);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #274c3d;
+    opacity: 0.85;
+    text-transform: uppercase;
+  }
+
+  .custom-mockup[data-theme="charcoal"] .custom-mockup__overlay-top,
+  .custom-mockup[data-theme="charcoal"] .custom-mockup__overlay-main,
+  .custom-mockup[data-theme="charcoal"] .custom-mockup__overlay-bottom {
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  }
+
+  .custom-mockup__quick-upload {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 24px;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #1a1a1a;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+    z-index: 20;
+  }
+
+  .custom-mockup__quick-upload:hover {
+    background: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  }
+
+  .custom-mockup__hint {
+    text-align: center;
+    font-size: 0.72rem;
+    opacity: 0.6;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+
+  /* ─── RIGHT CONTROLS PANEL ─── */
+  .custom-pdp__controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .custom-pdp__eyebrow {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8b1a10;
+    opacity: 0.85;
+  }
+
+  .custom-pdp__title {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    line-height: 1.15;
+    margin: 0;
+    color: #1a1a1a;
+  }
+
+  .custom-pdp__rating-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+  }
+
+  .custom-pdp__stars {
+    color: #f4a261;
+    letter-spacing: 0.1em;
+    font-size: 0.95rem;
+  }
+
+  .custom-pdp__review-count {
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .custom-pdp__sep { opacity: 0.4; }
+  .custom-pdp__rating-tag { opacity: 0.75; font-size: 0.8rem; }
+
+  .custom-pdp__price-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+  }
+
+  .custom-pdp__price {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  .custom-pdp__compare {
+    font-size: 1.15rem;
+    text-decoration: line-through;
+    opacity: 0.45;
+  }
+
+  .custom-pdp__badge {
+    background: #ffeedb;
+    color: #8b1a10;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .custom-pdp__tax-note {
+    font-size: 0.78rem;
+    opacity: 0.65;
+    margin: -0.5rem 0 0;
+  }
+
+  .custom-pdp__option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .custom-pdp__option-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #1a1a1a;
+  }
+
+  .custom-pdp__label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .custom-pdp__size-guide-link {
+    font-size: 0.72rem;
+    color: #8b1a10;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .custom-pdp__select-wrap {
+    position: relative;
+  }
+
+  .custom-pdp__select {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid #d1d1d1;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    background: #fff;
+    color: #1a1a1a;
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+  }
+
+  .custom-pdp__select:focus {
+    outline: none;
+    border-color: #1a1a1a;
+  }
+
+  .custom-pdp__size-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .custom-size-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.65rem 0.5rem;
+    border: 1.5px solid #dcd6cd;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .custom-size-pill:hover {
+    border-color: #8b1a10;
+  }
+
+  .custom-size-pill--active {
+    border-color: #1a1a1a;
+    background: #1a1a1a;
+    color: #fff;
+  }
+
+  .custom-size-pill__name {
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  .custom-size-pill__dim {
+    font-size: 0.68rem;
+    opacity: 0.75;
+    margin-top: 2px;
+  }
+
+  .custom-pdp__color-swatches {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .custom-swatch {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.15);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .custom-swatch:hover {
+    transform: scale(1.1);
+  }
+
+  .custom-swatch--active {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1a1a1a;
+    transform: scale(1.08);
+  }
+
+  .custom-pdp__color-name {
+    font-size: 0.78rem;
+    opacity: 0.75;
+    margin-top: -0.25rem;
+  }
+
+  /* Upload box */
+  .custom-pdp__upload-box {
+    border: 1.5px dashed #8b1a10;
+    border-radius: 10px;
+    padding: 1rem;
+    background: #fffaf8;
+    transition: all 0.2s ease;
+  }
+
+  .custom-pdp__upload-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .custom-pdp__upload-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #f6e8e5;
+    color: #8b1a10;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  .custom-pdp__upload-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .custom-pdp__upload-text strong {
+    font-size: 0.82rem;
+    color: #8b1a10;
+  }
+
+  .custom-pdp__upload-text span {
+    font-size: 0.72rem;
+    opacity: 0.75;
+  }
+
+  .custom-pdp__upload-btn {
+    flex-shrink: 0;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.75rem;
+    border-color: #8b1a10;
+    color: #8b1a10;
+  }
+
+  .custom-pdp__upload-preview-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .custom-pdp__upload-preview-bar img {
+    width: 44px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .custom-pdp__upload-file-meta {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  .custom-pdp__upload-file-meta strong {
+    font-size: 0.8rem;
+    color: #1a1a1a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .custom-pdp__upload-file-meta span {
+    font-size: 0.68rem;
+    color: #2d6a4f;
+    font-weight: 600;
+  }
+
+  .custom-pdp__upload-remove {
+    background: none;
+    border: none;
+    font-size: 0.72rem;
+    color: #8b1a10;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* CTAs */
+  .custom-pdp__cta-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-top: 0.5rem;
+  }
+
+  .custom-pdp__main-cta {
+    width: 100%;
+    padding: 1.05rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: grid;
+    place-items: center;
+  }
+
+  .custom-pdp__main-cta:hover {
+    background: #8b1a10;
+  }
+
+  .custom-pdp__buy-now {
+    width: 100%;
+    padding: 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border: 1.5px solid #1a1a1a;
+    color: #1a1a1a;
+    border-radius: 8px;
+  }
+
+  .custom-pdp__buy-now:hover {
+    background: #1a1a1a;
+    color: #fff;
+  }
+
+  .custom-pdp__delivery-card {
+    background: #f9f6f0;
+    border: 1px solid #e7decb;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .custom-pdp__delivery-head {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #8b1a10;
+    font-size: 0.82rem;
+  }
+
+  .custom-pdp__delivery-card p {
+    font-size: 0.75rem;
+    opacity: 0.75;
+    line-height: 1.45;
+    margin: 0;
+  }
+
+  /* ─── STANDARD PDP STYLES ─── */
+  .pdp__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  .pdp__gallery { max-width: 360px; }
+
+  .pdp__main-image {
+    background: #f0ebe0;
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 5/7;
+    max-height: 420px;
+  }
+
+  .pdp__main-image img { width: 100%; height: 100%; object-fit: cover; }
+
+  .pdp__thumbs {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    scrollbar-width: thin;
+  }
+
+  .pdp__thumb {
+    flex-shrink: 0;
+    width: 60px;
+    height: 84px;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .pdp__thumb--active { border-color: var(--maroon); }
+  .pdp__thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  .pdp__reviews {
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.65rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    opacity: 0.72;
+  }
+
+  .pdp__rating { font-weight: 600; color: var(--maroon); }
+  .pdp__reviews-sep { opacity: 0.45; }
+  .pdp__reviews-count { font-weight: 400; }
+
+  .pdp__title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .pdp__price-block {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .pdp__price { font-size: 1.35rem; font-weight: 700; }
+  .pdp__compare-price { text-decoration: line-through; opacity: 0.5; font-size: 1rem; }
+
+  .pdp__sale-badge {
+    background: var(--maroon);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .pdp__tax-note {
+    font-size: 0.8rem;
+    opacity: 0.65;
+    margin-bottom: 1.5rem;
+  }
+
+  .pdp__variant { margin-bottom: 1.5rem; }
+  .pdp__variant .label { display: block; margin-bottom: 0.5rem; }
+
+  .pdp__size-options { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .pdp__size-btn {
+    padding: 0.55rem 1.1rem;
+    border: 1.5px solid var(--maroon);
+    border-radius: var(--radius-btn);
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: transparent;
+    color: var(--maroon);
+    transition: all var(--transition);
+  }
+
+  .pdp__size-btn--active,
+  .pdp__size-btn:hover {
+    background: var(--maroon);
+    color: var(--cream);
+  }
+
+  .pdp__offers {
+    position: relative;
+    margin-bottom: 1.35rem;
+    padding: 1.15rem 1.5rem 0 0;
+    border-top: 1px solid var(--cream-dark);
+  }
+
+  .pdp__offers-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    cursor: pointer;
+    list-style: none;
+    padding-bottom: 0.15rem;
+  }
+
+  .pdp__offers-summary::-webkit-details-marker { display: none; }
+
+  .pdp__offers-summary::after {
+    content: '+';
+    position: absolute;
+    right: 0;
+    top: 1.15rem;
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 400;
+    opacity: 0.45;
+    line-height: 1;
+  }
+
+  .pdp__offers[open] .pdp__offers-summary::after { content: '−'; }
+
+  .pdp__offers-lead {
+    font-family: var(--serif);
+    font-size: 0.92rem;
+    font-style: italic;
+    opacity: 0.82;
+    line-height: 1.35;
+  }
+
+  .pdp__offers-list {
+    margin-top: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .pdp__offer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid rgba(139, 26, 16, 0.07);
+  }
+
+  .pdp__offer:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .pdp__offer-main {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .pdp__offer-tier { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.01em; }
+  .pdp__offer-rate { font-size: 0.75rem; font-weight: 600; color: var(--maroon); white-space: nowrap; }
+  .pdp__offer-detail { font-size: 0.7rem; opacity: 0.55; line-height: 1.35; }
+
+  .pdp__actions { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; }
+
+  .pdp__qty {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid var(--maroon);
+    border-radius: var(--radius-btn);
+    overflow: hidden;
+  }
+
+  .pdp__qty button {
+    width: 40px;
+    height: 44px;
+    font-size: 1.1rem;
+    color: var(--maroon);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  .pdp__qty input {
+    width: 48px;
+    text-align: center;
+    border: none;
+    font-size: 0.9rem;
+    font-family: inherit;
+    background: transparent;
+    -moz-appearance: textfield;
+  }
+
+  .pdp__qty input::-webkit-outer-spin-button,
+  .pdp__qty input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .pdp__add-cart {
+    flex: 1;
+    padding: 0.85rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .pdp__buy-now {
+    width: 100%;
+    padding: 0.85rem 1.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    border: 1.5px solid var(--maroon);
+    background: transparent;
+    color: var(--maroon);
+    border-radius: var(--radius-btn);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: all var(--transition);
+  }
+
+  .pdp__buy-now:hover { background: var(--maroon); color: var(--cream); }
+
+  .pdp__accordion {
+    border-top: 1px solid var(--cream-dark);
+    padding: 1rem 0;
+  }
+
+  .pdp__accordion summary {
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .pdp__accordion summary::-webkit-details-marker { display: none; }
+
+  .pdp__description {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+
+  .pdp__description p { margin-bottom: 0.75rem; }
+
+  .pdp__related {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--cream-dark);
+  }
+
+  .pdp__related h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .pdp__related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 900px) {
+    .custom-pdp {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+
+    .custom-pdp__stage {
+      flex-direction: column-reverse;
+      position: static;
+    }
+
+    .custom-pdp__thumbs {
+      flex-direction: row;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .pdp__grid { grid-template-columns: 1fr; }
+    .pdp__actions { flex-direction: column; }
+    .pdp__qty {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script define:vars={{ productId: product.id, productTitle: product.title, productSlug: product.slug, productImage: defaultMainImage, isCustomProduct: isCustom }}>
+  let customUploadedUrl = null;
+  let customUploadedFile = null;
+  let selectedColor = 'Cream White';
+  let selectedFormat = 'Square';
+
+  function getActiveSizeBtn() {
+    return document.querySelector('.custom-size-pill--active, .pdp__size-btn--active');
+  }
+
+  function getLineItem() {
+    const activeBtn = getActiveSizeBtn();
+    const qtyInput = document.getElementById('qty-input');
+    const qty = qtyInput ? parseInt(qtyInput.value) : 1;
+
+    const formatSelect = document.getElementById('format-select');
+    const format = formatSelect ? formatSelect.value : selectedFormat;
+
+    return {
+      productId,
+      title: productTitle,
+      slug: productSlug,
+      image: customUploadedUrl || productImage,
+      customImage: customUploadedUrl || null,
+      format,
+      color: selectedColor,
+      size: activeBtn?.dataset.size || 'A4',
+      variantId: activeBtn?.dataset.variantId || '',
+      price: parseInt(activeBtn?.dataset.price || '7900'),
+      quantity: qty,
+    };
+  }
+
+  // Size pill clicking
+  const sizeBtns = document.querySelectorAll('.custom-size-pill, .pdp__size-btn');
+  const displayPrice = document.getElementById('display-price');
+  const comparePrice = document.getElementById('compare-price');
+
+  sizeBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      sizeBtns.forEach((b) => {
+        b.classList.remove('custom-size-pill--active', 'pdp__size-btn--active');
+      });
+      btn.classList.add(btn.classList.contains('custom-size-pill') ? 'custom-size-pill--active' : 'pdp__size-btn--active');
+
+      const price = parseInt(btn.dataset.price || '0');
+      if (displayPrice) displayPrice.textContent = `₹${(price / 100).toFixed(2)}`;
+      if (comparePrice && btn.dataset.compare) {
+        comparePrice.textContent = `₹${(parseInt(btn.dataset.compare) / 100).toFixed(2)}`;
+        comparePrice.style.display = '';
+      } else if (comparePrice) {
+        comparePrice.style.display = 'none';
+      }
+    });
+  });
+
+  // Customizer: Color swatch clicking
+  const swatches = document.querySelectorAll('.custom-swatch');
+  const mockupCanvas = document.getElementById('mockup-canvas');
+  const selectedColorName = document.getElementById('selected-color-name');
+
+  swatches.forEach((swatch) => {
+    swatch.addEventListener('click', () => {
+      swatches.forEach((s) => s.classList.remove('custom-swatch--active'));
+      swatch.classList.add('custom-swatch--active');
+      const theme = swatch.dataset.theme || 'cream';
+      selectedColor = swatch.dataset.colorName || 'Cream White';
+      if (mockupCanvas) mockupCanvas.setAttribute('data-theme', theme);
+      if (selectedColorName) selectedColorName.textContent = selectedColor;
+    });
+  });
+
+  // Customizer: Thumbnails switching
+  document.querySelectorAll('.custom-pdp__thumb').forEach((thumb) => {
+    thumb.addEventListener('click', () => {
+      const src = thumb.dataset.thumbSrc;
+      const mockupImg = document.getElementById('mockup-photo');
+      if (mockupImg && src) mockupImg.src = src;
+      document.querySelectorAll('.custom-pdp__thumb').forEach((t) => t.classList.remove('custom-pdp__thumb--active'));
+      thumb.classList.add('custom-pdp__thumb--active');
+    });
+  });
+
+  // Standard PDP Thumbs
+  document.querySelectorAll('.pdp__thumb').forEach((thumb) => {
+    thumb.addEventListener('click', () => {
+      const mainImg = document.getElementById('main-image');
+      if (mainImg) mainImg.src = thumb.dataset.image;
+      document.querySelectorAll('.pdp__thumb').forEach((t) => t.classList.remove('pdp__thumb--active'));
+      thumb.classList.add('pdp__thumb--active');
+    });
+  });
+
+  // Photo Upload Handling
+  const fileInput = document.getElementById('custom-file-input');
+  const triggerBtn = document.getElementById('trigger-upload-btn');
+  const dropzone = document.getElementById('upload-dropzone');
+  const previewBar = document.getElementById('upload-preview-bar');
+  const previewThumb = document.getElementById('upload-preview-thumb');
+  const filenameLabel = document.getElementById('upload-filename');
+  const removePhotoBtn = document.getElementById('remove-uploaded-photo');
+  const mockupPhoto = document.getElementById('mockup-photo');
+
+  if (triggerBtn && fileInput) {
+    triggerBtn.addEventListener('click', () => fileInput.click());
+  }
+
+  async function uploadFileToServer(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+    if (!res.ok) throw new Error('Failed to upload image');
+    const data = await res.json();
+    return data.url;
+  }
+
+  function handleFileSelected(file) {
+    if (!file) return;
+    customUploadedFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      if (mockupPhoto) mockupPhoto.src = dataUrl;
+      if (previewThumb) previewThumb.src = dataUrl;
+      if (filenameLabel) filenameLabel.textContent = file.name;
+      if (dropzone) dropzone.style.display = 'none';
+      if (previewBar) {
+        previewBar.style.display = 'flex';
+        previewBar.removeAttribute('hidden');
+      }
+    };
+    reader.readAsDataURL(file);
+
+    // Upload in background
+    uploadFileToServer(file)
+      .then((url) => {
+        customUploadedUrl = url;
+      })
+      .catch((err) => {
+        console.error('Upload error:', err);
+      });
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      handleFileSelected(file);
+    });
+  }
+
+  if (dropzone) {
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.style.borderColor = '#1a1a1a';
+    });
+    dropzone.addEventListener('dragleave', () => {
+      dropzone.style.borderColor = '';
+    });
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.style.borderColor = '';
+      const file = e.dataTransfer?.files?.[0];
+      handleFileSelected(file);
+    });
+  }
+
+  if (removePhotoBtn) {
+    removePhotoBtn.addEventListener('click', () => {
+      customUploadedUrl = null;
+      customUploadedFile = null;
+      if (fileInput) fileInput.value = '';
+      if (mockupPhoto) mockupPhoto.src = productImage;
+      if (previewBar) {
+        previewBar.style.display = 'none';
+        previewBar.setAttribute('hidden', '');
+      }
+      if (dropzone) dropzone.style.display = 'flex';
+    });
+  }
+
+  // Add to cart & Start Creating
+  async function handleAddToCart(redirectCheckout = false) {
+    const btn = document.getElementById('start-creating-btn') || document.getElementById('add-to-cart');
+    const originalText = btn ? btn.textContent : 'Add to cart';
+
+    if (btn) {
+      btn.textContent = 'Preparing...';
+      btn.disabled = true;
+    }
+
+    if (customUploadedFile && !customUploadedUrl) {
+      try {
+        customUploadedUrl = await uploadFileToServer(customUploadedFile);
+      } catch {
+        // Fallback to client preview
+      }
+    }
+
+    const item = getLineItem();
+    window.TWCart.addToCart(item);
+
+    if (btn) {
+      btn.textContent = 'Added ✓';
+      btn.style.background = '#2d6a4f';
+      setTimeout(() => {
+        btn.textContent = originalText;
+        btn.style.background = '';
+        btn.disabled = false;
+      }, 2000);
+    }
+
+    if (redirectCheckout) {
+      window.location.href = '/checkout';
+    }
+  }
+
+  document.getElementById('start-creating-btn')?.addEventListener('click', () => handleAddToCart(false));
+  document.getElementById('add-to-cart')?.addEventListener('click', () => handleAddToCart(false));
+
+  document.getElementById('buy-now')?.addEventListener('click', () => handleAddToCart(true));
+
+  // Quantity handlers
+  document.getElementById('qty-minus')?.addEventListener('click', () => {
+    const qtyInput = document.getElementById('qty-input');
+    if (qtyInput) qtyInput.value = String(Math.max(1, parseInt(qtyInput.value) - 1));
+  });
+  document.getElementById('qty-plus')?.addEventListener('click', () => {
+    const qtyInput = document.getElementById('qty-input');
+    if (qtyInput) qtyInput.value = String(Math.min(99, parseInt(qtyInput.value) + 1));
+  });
+</script>

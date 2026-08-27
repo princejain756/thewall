@@ -1,0 +1,148 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { listCollections, listProducts } from '../lib/products';
+import { posterSrc } from '../data/collections';
+
+const collections = await listCollections();
+const bestSellers = await listProducts({ limit: 24 });
+---
+
+<Layout title="Shop All Posters — The Wall Records">
+  <Header />
+  <main class="shop-page">
+    <header class="shop-page__hero">
+      <span class="label">The Wall Records</span>
+      <h1 class="heading-serif">shop all posters.</h1>
+      <p class="body-text">436+ curated prints across anime, movies, sports, cars, aesthetic & more. From ₹59.</p>
+    </header>
+
+    <section class="shop-page__collections">
+      <h2 class="shop-page__section-title serif">Collections</h2>
+      <div class="shop-page__collection-grid">
+        {collections.map((col) => (
+          <a href={`/collections/${col.slug}`} class="shop-page__collection-card">
+            {col.image && <img src={col.image} alt={col.name} loading="lazy" width="200" height="280" />}
+            <div class="shop-page__collection-info">
+              <h3>{col.name}</h3>
+              <span>{col.productCount} prints</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="shop-page__products">
+      <h2 class="shop-page__section-title serif">Best Sellers</h2>
+      <div class="shop-page__product-grid">
+        {bestSellers.map((product) => (
+          <ProductCard product={product} />
+        ))}
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .shop-page {
+    padding: 0.75rem var(--section-pad-x) var(--section-pad-y);
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+
+  @media (min-width: 769px) {
+    .shop-page {
+      padding-top: 1.5rem;
+    }
+  }
+
+  .shop-page__hero {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .shop-page__hero h1 {
+    margin: 0.35rem 0 0.75rem;
+  }
+
+  .shop-page__section-title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .shop-page__collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 4rem;
+  }
+
+  .shop-page__collection-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--cream-dark);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+
+  .shop-page__collection-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(139, 26, 16, 0.12);
+  }
+
+  .shop-page__collection-card img {
+    width: 100%;
+    aspect-ratio: 5/7;
+    object-fit: cover;
+  }
+
+  .shop-page__collection-info {
+    padding: 0.75rem;
+    text-align: center;
+  }
+
+  .shop-page__collection-info h3 {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .shop-page__collection-info span {
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  .shop-page__product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .shop-page__product-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem 0.65rem;
+    }
+
+    .shop-page__product-grid :global(.product-card__title) {
+      font-size: 0.78rem;
+    }
+
+    .shop-page__product-grid :global(.product-card__price) {
+      font-size: 0.75rem;
+    }
+
+    .shop-page__collection-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+  }
+</style>

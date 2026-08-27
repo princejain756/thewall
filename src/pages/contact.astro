@@ -1,0 +1,128 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { CONTACT_INFO } from '../lib/content/policies';
+---
+
+<Layout title="Contact Us — The Wall Records" description="Get in touch with The Wall Records for orders, support, and business enquiries.">
+  <Header />
+  <main class="contact-page">
+    <div class="contact-page__inner container">
+      <header class="contact-page__head">
+        <span class="label">Support</span>
+        <h1 class="heading-serif">contact us.</h1>
+        <p class="body-text">We're here to help with orders, custom prints, and delivery questions.</p>
+      </header>
+
+      <div class="contact-page__grid">
+        <section class="contact-card">
+          <h2>Email</h2>
+          <a href={`mailto:${CONTACT_INFO.email}`}>{CONTACT_INFO.email}</a>
+          <p>We reply within 1–2 business days.</p>
+        </section>
+        <section class="contact-card">
+          <h2>Phone</h2>
+          <a href={`tel:${CONTACT_INFO.phone.replace(/\s/g, '')}`}>{CONTACT_INFO.phone}</a>
+          <p>Mon–Sat, 10 AM – 6 PM IST</p>
+        </section>
+        <section class="contact-card">
+          <h2>Website</h2>
+          <a href={CONTACT_INFO.website}>{CONTACT_INFO.website.replace('https://', '')}</a>
+          <p>Shop art posters & custom memory prints online.</p>
+        </section>
+        <section class="contact-card">
+          <h2>Business</h2>
+          <p class="contact-card__name">{CONTACT_INFO.name}</p>
+          <p>India · Online retail — posters & custom prints</p>
+        </section>
+      </div>
+
+      <section class="contact-page__links">
+        <h2 class="serif">Helpful links</h2>
+        <ul>
+          <li><a href="/policies/shipping">Shipping Policy</a></li>
+          <li><a href="/policies/refund">Refund & Cancellation</a></li>
+          <li><a href="/policies/faq">FAQ</a></li>
+          <li><a href="/account">My Account</a></li>
+        </ul>
+      </section>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .contact-page {
+    padding: 0.75rem var(--section-pad-x) var(--section-pad-y);
+  }
+
+  .contact-page__inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .contact-page__head {
+    margin-bottom: 2rem;
+  }
+
+  .contact-page__head h1 {
+    margin: 0.5rem 0 0.75rem;
+  }
+
+  .contact-page__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-card {
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(139, 26, 16, 0.12);
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  .contact-card h2 {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+  }
+
+  .contact-card a,
+  .contact-card__name {
+    display: block;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .contact-card p {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  .contact-page__links ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .contact-page__links a {
+    font-size: 0.9rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 640px) {
+    .contact-page__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
