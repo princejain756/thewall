@@ -1,0 +1,181 @@
+---
+import type { ProductWithVariants } from '../lib/products';
+import { parseImages } from '../lib/products';
+import { formatPrice } from '../lib/db';
+
+interface Props {
+  products: ProductWithVariants[];
+}
+
+const { products } = Astro.props;
+---
+
+<section class="section section--cream section--compact f1-collection home-carousel" id="f1-collection" aria-labelledby="f1-collection-heading">
+  <div class="f1-collection__layout container">
+    <div class="f1-collection__content">
+      <span class="label">F1 Collection</span>
+      <h2 id="f1-collection-heading" class="heading-serif f1-collection__title">FORMULA ONE.</h2>
+      <p class="body-text f1-collection__text">
+        High speed. High passion. Legendary moments, forever framed.
+      </p>
+      <a href="/collections/f1" class="btn btn--maroon">Shop F1 <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="home-carousel__col f1-collection__carousel-col">
+      <button class="carousel-arrow carousel-arrow--prev" aria-label="Previous F1 posters" data-carousel-prev>
+        <svg width="14" height="24" viewBox="0 0 14 24" fill="none">
+          <path d="M12 2L2 12L12 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      <div class="home-carousel__wrap" data-carousel-wrap>
+        <div class="home-carousel__track f1-carousel__track" data-carousel>
+          {
+            products.map((product) => {
+              const images = parseImages(product.images);
+              const image = images[0] || '/logo.png';
+              return (
+                <a href={`/products/${product.slug}`} class="f1-carousel__item">
+                  <div class="f1-card">
+                    <img src={image} alt={product.title} loading="lazy" width="400" height="520" />
+                    <div class="f1-card__overlay">
+                      <span class="f1-card__title">{product.title}</span>
+                      <span class="f1-card__price">From {formatPrice(product.minPrice)}</span>
+                    </div>
+                  </div>
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
+
+      <button class="carousel-arrow carousel-arrow--next" aria-label="Next F1 posters" data-carousel-next>
+        <svg width="14" height="24" viewBox="0 0 14 24" fill="none">
+          <path d="M2 2L12 12L2 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .f1-collection {
+    border-top: 1px solid rgba(139, 26, 16, 0.06);
+    overflow: hidden;
+  }
+
+  .f1-collection__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.32fr) minmax(0, 0.68fr);
+    gap: clamp(0.85rem, 1.8vw, 1.5rem);
+    align-items: center;
+  }
+
+  .f1-collection__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    max-width: 17rem;
+  }
+
+  .f1-collection__title {
+    display: none;
+  }
+
+  .f1-collection__text {
+    color: var(--maroon);
+    opacity: 0.8;
+    max-width: 24ch;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .f1-collection__content .btn {
+    align-self: flex-start;
+    padding: 0.7rem 1.25rem;
+    font-size: 0.68rem;
+    margin-top: 0.15rem;
+  }
+
+  .f1-collection__carousel-col {
+    gap: 0.65rem;
+  }
+
+  .f1-carousel__track {
+    gap: 1rem;
+  }
+
+  .f1-carousel__item {
+    flex: 0 0 clamp(168px, 15vw, 210px);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .f1-card {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    aspect-ratio: 1 / 1.05;
+    background: #1a1a1a;
+    box-shadow: 0 12px 32px rgba(42, 21, 18, 0.14);
+    transition: transform var(--transition), box-shadow var(--transition);
+  }
+
+  .f1-carousel__item:hover .f1-card {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 40px rgba(42, 21, 18, 0.2);
+  }
+
+  .f1-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .f1-card__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0.85rem 0.75rem;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, transparent 35%, transparent 65%, rgba(0, 0, 0, 0.35) 100%);
+    pointer-events: none;
+  }
+
+  .f1-card__title {
+    font-family: var(--sans);
+    font-size: clamp(0.62rem, 1.1vw, 0.72rem);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1.25;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .f1-card__price {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #fff;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 960px) {
+    .f1-collection__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .f1-collection__content {
+      max-width: none;
+      text-align: center;
+      align-items: center;
+    }
+  }
+</style>

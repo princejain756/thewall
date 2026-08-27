@@ -1,42 +1,12 @@
 ---
-const posters = [
-  {
-    title: 'How To Forget',
-    price: 'From ₹ 99.00',
-    style: 'poster--forget',
-    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=560&fit=crop&q=80',
-  },
-  {
-    title: 'Sapta Saagaradaache Ello',
-    price: 'From ₹ 99.00',
-    style: 'poster--sapta',
-    image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=560&fit=crop&q=80',
-  },
-  {
-    title: 'FALLING SLOWLY 09',
-    price: 'From ₹ 99.00',
-    style: 'poster--falling',
-    image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=560&fit=crop&q=80',
-  },
-  {
-    title: 'Mind Over Noise',
-    price: 'From ₹ 99.00',
-    style: 'poster--mind',
-    image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400&h=560&fit=crop&q=80',
-  },
-  {
-    title: 'The Loneliness',
-    price: 'From ₹ 99.00',
-    style: 'poster--lonely',
-    image: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&h=560&fit=crop&q=80',
-  },
-  {
-    title: 'These Days',
-    price: 'From ₹ 99.00',
-    style: 'poster--days',
-    image: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=560&fit=crop&q=80',
-  },
-];
+import type { ProductWithVariants } from '../lib/products';
+import ProductCard from './ProductCard.astro';
+
+interface Props {
+  products: ProductWithVariants[];
+}
+
+const { products } = Astro.props;
 ---
 
 <section class="section section--cream art-posters" id="art-posters">
@@ -45,7 +15,7 @@ const posters = [
       <span class="label">Art Posters</span>
       <h1 class="heading-serif">prints that speak.</h1>
       <p class="body-text">Curated designs. Timeless expression.</p>
-      <a href="#shop" class="btn btn--maroon">Shop Now <span aria-hidden="true">→</span></a>
+      <a href="/shop" class="btn btn--maroon">Shop Now <span aria-hidden="true">→</span></a>
     </div>
 
     <div class="art-posters__carousel-col">
@@ -57,18 +27,11 @@ const posters = [
 
       <div class="art-posters__carousel-wrap" data-carousel-wrap>
         <div class="art-posters__carousel" data-carousel>
-          {
-            posters.map((poster) => (
-              <article class="poster-card">
-                <div class={`poster-card__image ${poster.style}`}>
-                  <img src={poster.image} alt={poster.title} loading="lazy" width="200" height="280" />
-                  <div class="poster-card__overlay" />
-                </div>
-                <h3 class="poster-card__title serif">{poster.title}</h3>
-                <p class="poster-card__price">{poster.price}</p>
-              </article>
-            ))
-          }
+          {products.map((product) => (
+            <div class="art-posters__card-wrap">
+              <ProductCard product={product} />
+            </div>
+          ))}
         </div>
       </div>
 
@@ -83,203 +46,106 @@ const posters = [
 
 <style>
   .art-posters {
-    position: relative;
     overflow: hidden;
-    width: 100%;
   }
 
   .art-posters__layout {
-    position: relative;
-    width: 100%;
-    max-width: var(--max-width);
-    margin-inline: auto;
-    padding-block: var(--section-pad-y);
-    padding-inline: clamp(1.25rem, 5vw, 4rem);
     display: grid;
-    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
-    gap: clamp(1.25rem, 4vw, 3rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+    gap: clamp(2rem, 5vw, 4rem);
     align-items: center;
-    min-width: 0;
-  }
-
-  @media (min-width: 961px) {
-    .art-posters__layout {
-      padding-inline: clamp(2rem, 5vw, 4rem);
-    }
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--section-pad-x);
   }
 
   .art-posters__content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-    padding-left: 0.5rem;
-    min-width: 0;
+    max-width: 380px;
+  }
+
+  .art-posters__content .label {
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .art-posters__content h1 {
+    margin-bottom: 0.75rem;
+  }
+
+  .art-posters__content .body-text {
+    margin-bottom: 1.5rem;
   }
 
   .art-posters__carousel-col {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    display: flex;
     align-items: center;
-    gap: clamp(0.25rem, 1vw, 0.75rem);
+    gap: 0.5rem;
     min-width: 0;
-    width: 100%;
-    overflow: hidden;
   }
 
-  /* Scrollport: fixed width — children must NOT use width:max-content (iOS zoom bug) */
   .art-posters__carousel-wrap {
-    overflow-x: auto;
-    overflow-y: hidden;
-    min-width: 0;
-    width: 100%;
-    max-width: 100%;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    overscroll-behavior-x: contain;
-    touch-action: pan-x;
-    contain: inline-size;
-    isolation: isolate;
-  }
-
-  .art-posters__carousel-wrap::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Track: grid stays width:100%; extra columns scroll inside wrap */
-  .art-posters__carousel {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: clamp(130px, 14vw, 175px);
-    gap: clamp(1rem, 2vw, 1.75rem);
-    width: 100%;
-    min-width: 0;
-    padding-block: 0.5rem;
-  }
-
-  .poster-card {
-    min-width: 0;
-    scroll-snap-align: start;
-  }
-
-  .poster-card__image {
-    position: relative;
-    aspect-ratio: 5 / 7;
-    border-radius: 2px;
     overflow: hidden;
-    background: #ddd;
-    box-shadow: 0 4px 20px rgba(139, 26, 16, 0.12);
+    flex: 1;
+    min-width: 0;
   }
 
-  .poster-card__image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: saturate(0.85) contrast(1.05);
+  .art-posters__carousel {
+    display: flex;
+    gap: 1.25rem;
+    transition: transform 0.4s ease;
   }
 
-  .poster-card__overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 60%, rgba(0, 0, 0, 0.15) 100%);
-    pointer-events: none;
-  }
-
-  .poster-card__title {
-    margin-top: 0.85rem;
-    font-size: clamp(0.85rem, 1.2vw, 1rem);
-    font-weight: 500;
-    line-height: 1.3;
-    color: var(--maroon);
-    overflow-wrap: anywhere;
-    word-break: break-word;
-  }
-
-  .poster-card__price {
-    margin-top: 0.2rem;
-    font-size: 0.72rem;
-    font-weight: 500;
-    color: var(--maroon);
-    opacity: 0.85;
+  .art-posters__card-wrap {
+    flex: 0 0 180px;
   }
 
   .carousel-arrow {
     flex-shrink: 0;
-    z-index: 2;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--maroon);
     color: var(--maroon);
-    opacity: 0.55;
-    padding: 0.5rem 0.25rem;
-    align-self: center;
-    transition: opacity var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
   }
 
   .carousel-arrow:hover {
-    opacity: 1;
+    background: var(--maroon);
+    color: var(--cream);
   }
 
-  @media (max-width: 960px) {
+  @media (max-width: 900px) {
     .art-posters__layout {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 2rem;
+      grid-template-columns: 1fr;
     }
 
     .art-posters__content {
-      padding-left: 0;
-    }
-
-    .art-posters__carousel-col {
-      grid-template-columns: minmax(0, 1fr);
-      margin-inline: 0;
-      width: 100%;
-      max-width: 100%;
-    }
-
-    .art-posters__carousel-wrap {
-      margin-inline: 0;
-      width: 100%;
-      max-width: 100%;
-    }
-
-    .art-posters__carousel {
-      grid-auto-columns: min(82%, 200px);
-      gap: 0.85rem;
-      padding-inline: 0;
-    }
-
-    .poster-card {
-      scroll-snap-align: center;
-    }
-
-    .poster-card__title {
-      font-size: 0.9rem;
-    }
-
-    .carousel-arrow {
-      display: none;
+      max-width: none;
+      text-align: center;
     }
   }
 </style>
 
 <script>
-  const section = document.querySelector('.art-posters');
-  const carouselWrap = section?.querySelector('[data-carousel-wrap]');
-  const prev = section?.querySelector('[data-carousel-prev]');
-  const next = section?.querySelector('[data-carousel-next]');
+  const wrap = document.querySelector('[data-carousel-wrap]');
+  const carousel = document.querySelector('[data-carousel]');
+  const prev = document.querySelector('[data-carousel-prev]');
+  const next = document.querySelector('[data-carousel-next]');
+  if (wrap && carousel && prev && next) {
+    let offset = 0;
+    const step = 200;
+    const maxOffset = () => Math.max(0, carousel.scrollWidth - wrap.clientWidth);
 
-  const scrollAmount = () => {
-    const card = section?.querySelector('.poster-card');
-    const wrap = carouselWrap;
-    if (!card || !wrap) return 200;
-    const gap = parseFloat(getComputedStyle(wrap.querySelector('[data-carousel]')!).gap) || 16;
-    return card.getBoundingClientRect().width + gap;
-  };
-
-  prev?.addEventListener('click', () => {
-    carouselWrap?.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
-  });
-
-  next?.addEventListener('click', () => {
-    carouselWrap?.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
-  });
+    prev.addEventListener('click', () => {
+      offset = Math.max(0, offset - step);
+      carousel.style.transform = `translateX(-${offset}px)`;
+    });
+    next.addEventListener('click', () => {
+      offset = Math.min(maxOffset(), offset + step);
+      carousel.style.transform = `translateX(-${offset}px)`;
+    });
+  }
 </script>

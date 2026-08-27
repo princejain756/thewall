@@ -1,0 +1,174 @@
+---
+import type { ProductWithVariants } from '../lib/products';
+import ProductCard from './ProductCard.astro';
+
+interface Props {
+  products: ProductWithVariants[];
+}
+
+const { products } = Astro.props;
+---
+
+<section class="section section--cream section--compact home-carousel" id="art-posters" aria-labelledby="trending-now-heading">
+  <div class="home-carousel__layout container">
+    <div class="home-carousel__content">
+      <span class="label">Trending Now</span>
+      <h2 id="trending-now-heading" class="heading-serif home-carousel__title">
+        WHAT'S TRENDING RIGHT NOW.
+      </h2>
+      <p class="body-text">Most loved. Most ordered. Grab yours before it's gone.</p>
+      <a href="/shop" class="btn btn--maroon">Shop Now <span aria-hidden="true">→</span></a>
+    </div>
+
+    <div class="home-carousel__col">
+      <button class="carousel-arrow carousel-arrow--prev" aria-label="Previous posters" data-carousel-prev>
+        <svg width="14" height="24" viewBox="0 0 14 24" fill="none" aria-hidden="true">
+          <path d="M12 2L2 12L12 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      <div class="home-carousel__wrap" data-carousel-wrap>
+        <div class="home-carousel__track" data-carousel>
+          {products.map((product) => (
+            <div class="home-carousel__item">
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+        <div class="home-carousel__progress" aria-hidden="true">
+          <span class="home-carousel__progress-bar" data-carousel-progress />
+        </div>
+      </div>
+
+      <button class="carousel-arrow carousel-arrow--next" aria-label="Next posters" data-carousel-next>
+        <svg width="14" height="24" viewBox="0 0 14 24" fill="none" aria-hidden="true">
+          <path d="M2 2L12 12L2 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-carousel {
+    overflow: hidden;
+    border-top: 1px solid rgba(139, 26, 16, 0.06);
+  }
+
+  .home-carousel__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.38fr) minmax(0, 0.62fr);
+    gap: clamp(1rem, 2vw, 1.75rem);
+    align-items: center;
+  }
+
+  .home-carousel__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-width: 20rem;
+  }
+
+  .home-carousel__title {
+    color: var(--maroon);
+    font-size: clamp(1.65rem, 2.8vw, 2.35rem);
+    line-height: 1.1;
+  }
+
+  .home-carousel__content .body-text {
+    color: var(--maroon);
+    opacity: 0.8;
+    max-width: 28ch;
+  }
+
+  .home-carousel__col {
+    min-width: 0;
+  }
+
+  .home-carousel__track {
+    padding-bottom: 0.35rem;
+  }
+
+  .home-carousel__item {
+    flex: 0 0 clamp(132px, 11vw, 156px);
+  }
+
+  .home-carousel__progress {
+    height: 2px;
+    background: rgba(139, 26, 16, 0.12);
+    border-radius: 999px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+  }
+
+  .home-carousel__progress-bar {
+    display: block;
+    height: 100%;
+    width: 35%;
+    background: var(--maroon);
+    border-radius: inherit;
+    transition: margin-left 0.4s ease, width 0.4s ease;
+  }
+
+  @media (max-width: 960px) {
+    .home-carousel__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .home-carousel__content {
+      max-width: none;
+      text-align: center;
+      align-items: center;
+    }
+  }
+</style>
+
+<script>
+  function initCarousel(root: HTMLElement) {
+    const wrap = root.querySelector('[data-carousel-wrap]') as HTMLElement | null;
+    const carousel = root.querySelector('[data-carousel]') as HTMLElement | null;
+    const prev = root.querySelector('[data-carousel-prev]') as HTMLButtonElement | null;
+    const next = root.querySelector('[data-carousel-next]') as HTMLButtonElement | null;
+    const progress = root.querySelector('[data-carousel-progress]') as HTMLElement | null;
+    if (!wrap || !carousel || !prev || !next) return;
+
+    let offset = 0;
+    const step = () => {
+      const item = carousel.querySelector('.home-carousel__item, .f1-carousel__item') as HTMLElement | null;
+      return item ? item.offsetWidth + 18 : 190;
+    };
+
+    const maxOffset = () => Math.max(0, carousel.scrollWidth - wrap.clientWidth);
+
+    const updateProgress = () => {
+      if (!progress) return;
+      const max = maxOffset();
+      const scrollPct = max > 0 ? offset / max : 0;
+      const thumbPct = Math.min(100, Math.max(15, (wrap.clientWidth / carousel.scrollWidth) * 100));
+      progress.style.width = `${thumbPct}%`;
+      const travel = wrap.clientWidth * (1 - thumbPct / 100);
+      progress.style.marginLeft = `${scrollPct * travel}px`;
+    };
+
+    const move = () => {
+      carousel.style.transform = `translateX(-${offset}px)`;
+      updateProgress();
+    };
+
+    prev.addEventListener('click', () => {
+      offset = Math.max(0, offset - step());
+      move();
+    });
+    next.addEventListener('click', () => {
+      offset = Math.min(maxOffset(), offset + step());
+      move();
+    });
+
+    updateProgress();
+    window.addEventListener('resize', updateProgress);
+  }
+
+  document.querySelectorAll('.home-carousel, .f1-collection').forEach((root) => {
+    initCarousel(root as HTMLElement);
+  });
+</script>

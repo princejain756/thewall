@@ -2,7 +2,7 @@
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="footer section--cream">
+<footer class="footer section--maroon">
   <div class="container footer__inner">
     <div class="footer__brand">
       <a href="/" class="footer__logo-link" aria-label="the.Wall home">
@@ -26,35 +26,47 @@ const currentYear = new Date().getFullYear();
       <div class="footer__col">
         <h4>Memories</h4>
         <ul>
-          <li><a href="#memories">Memory Albums</a></li>
-          <li><a href="#memories">Photo Books</a></li>
-          <li><a href="#memories">Wedding Albums</a></li>
-          <li><a href="#memories">Family Albums</a></li>
+          <li><a href="/#custom-made">Memory Albums</a></li>
+          <li><a href="/#custom-made">Photo Books</a></li>
+          <li><a href="/#custom-made">Wedding Albums</a></li>
+          <li><a href="/#custom-made">Family Albums</a></li>
         </ul>
       </div>
       <div class="footer__col">
         <h4>Posters</h4>
         <ul>
-          <li><a href="#art-posters">Cinema</a></li>
-          <li><a href="#art-posters">Photography</a></li>
-          <li><a href="#art-posters">Quotes</a></li>
-          <li><a href="#art-posters">Aesthetic</a></li>
+          <li><a href="/collections/movies">Cinema</a></li>
+          <li><a href="/collections/aesthetic">Photography</a></li>
+          <li><a href="/collections/motivation-quotes">Quotes</a></li>
+          <li><a href="/collections/aesthetic">Aesthetic</a></li>
         </ul>
       </div>
       <div class="footer__col">
-        <h4>Artists</h4>
+        <h4>Custom Made</h4>
         <ul>
-          <li><a href="#artist-originals">Originals</a></li>
-          <li><a href="#artist-originals">Limited Editions</a></li>
-          <li><a href="#artist-originals">Prints</a></li>
+          <li><a href="/products/best-sister-timeless">Best Sister Poster</a></li>
+          <li><a href="/products/memory-poster">Memory Posters</a></li>
+          <li><a href="/products/memory-poster">Custom Albums</a></li>
+          <li><a href="/shop">All Posters</a></li>
         </ul>
       </div>
       <div class="footer__col">
         <h4>Company</h4>
         <ul>
-          <li><a href="#gifting">Gifting</a></li>
-          <li><a href="#gifting">Bargain Wall</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/search">Search</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/policies/about">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Policies</h4>
+        <ul>
+          <li><a href="/policies/privacy">Privacy Policy</a></li>
+          <li><a href="/policies/terms">Terms & Conditions</a></li>
+          <li><a href="/policies/refund">Refund Policy</a></li>
+          <li><a href="/policies/shipping">Shipping Policy</a></li>
+          <li><a href="/policies/faq">FAQ</a></li>
         </ul>
       </div>
     </div>
@@ -62,14 +74,18 @@ const currentYear = new Date().getFullYear();
 
   <div class="footer__bottom container">
     <p>&copy; {currentYear} The Wall Records. All rights reserved.</p>
-    <p class="footer__vibe">Emotional · Premium · Modern · Elegant · Personal · Story-Driven</p>
+    <p class="footer__credit">
+      Made by
+      <a href="https://adelev8.com" target="_blank" rel="noopener noreferrer">Adelev8</a>
+    </p>
   </div>
 </footer>
 
 <style>
   .footer {
-    border-top: 1px solid rgba(139, 26, 16, 0.1);
+    border-top: 1px solid rgba(245, 241, 230, 0.1);
     padding-top: clamp(3rem, 6vw, 5rem);
+    color: var(--cream);
   }
 
   .footer__inner {
@@ -101,16 +117,17 @@ const currentYear = new Date().getFullYear();
   .footer__tagline {
     font-size: 0.95rem;
     font-weight: 500;
-    color: var(--maroon);
+    color: var(--cream);
     font-style: italic;
     max-width: 32ch;
+    opacity: 0.95;
   }
 
   .footer__mission {
     font-size: 0.85rem;
     line-height: 1.65;
-    color: var(--maroon);
-    opacity: 0.8;
+    color: var(--cream);
+    opacity: 0.82;
     max-width: 42ch;
   }
 
@@ -121,8 +138,8 @@ const currentYear = new Date().getFullYear();
 
   .footer__columns {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.25rem;
     min-width: 0;
   }
 
@@ -131,14 +148,14 @@ const currentYear = new Date().getFullYear();
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--maroon);
+    color: var(--cream);
     margin-bottom: 1rem;
   }
 
   .footer__col a {
     display: block;
     font-size: 0.82rem;
-    color: var(--maroon);
+    color: var(--cream);
     opacity: 0.75;
     padding: 0.25rem 0;
     transition: opacity var(--transition);
@@ -154,14 +171,23 @@ const currentYear = new Date().getFullYear();
     justify-content: space-between;
     gap: 1rem;
     padding-block: 1.5rem 2.5rem;
-    border-top: 1px solid rgba(139, 26, 16, 0.08);
+    border-top: 1px solid rgba(245, 241, 230, 0.12);
     font-size: 0.75rem;
-    color: var(--maroon);
-    opacity: 0.65;
+    color: var(--cream);
+    opacity: 0.7;
   }
 
-  .footer__vibe {
-    letter-spacing: 0.02em;
+  .footer__credit a {
+    color: var(--cream);
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+    transition: opacity var(--transition);
+  }
+
+  .footer__credit a:hover {
+    opacity: 0.85;
   }
 
   @media (max-width: 900px) {

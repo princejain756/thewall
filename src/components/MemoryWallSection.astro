@@ -1,11 +1,13 @@
 ---
+import { posterSrc } from '../data/collections';
+
 const galleryPhotos = [
-  'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=300&h=380&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=300&h=380&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1609220136736-443aaeec3ad2?w=300&h=380&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=380&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300&h=380&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=300&h=380&fit=crop&q=80',
+  posterSrc('the wall', 'Cricket', 'Virat Kohli.jpeg'),
+  posterSrc('the wall', 'Anime', 'Luffy.jpeg'),
+  posterSrc('the wall', 'F1', 'Ayrton Senna F1.jpeg'),
+  posterSrc('the wall', 'Movies', 'download.jpeg'),
+  posterSrc('the wall', 'Aesthetic', 'universe.jpeg'),
+  posterSrc('the wall', 'Cars', 'A-Ferrari-F40.jpeg'),
 ];
 ---
 
@@ -17,7 +19,7 @@ const galleryPhotos = [
       <p class="body-text">
         Weddings, travel, couples, family, babies, pets, and celebrations — every wall has a story worth telling.
       </p>
-      <a href="#shop" class="btn btn--maroon">Explore Collection <span aria-hidden="true">→</span></a>
+      <a href="/shop" class="btn btn--maroon">Explore Collection <span aria-hidden="true">→</span></a>
     </div>
 
     <div class="memory-wall__gallery" aria-hidden="true">
@@ -38,10 +40,9 @@ const galleryPhotos = [
       src="/images/granduncle.png"
       alt="Couple looking through a family photo album in front of a wall of framed memories"
       loading="lazy"
-      width="1496"
-      height="1051"
+      width="1440"
+      height="600"
     />
-    <div class="memory-wall__lifestyle-gradient"></div>
   </div>
 </section>
 
@@ -110,13 +111,6 @@ const galleryPhotos = [
     object-fit: cover;
     object-position: center 42%;
     filter: saturate(0.96) brightness(0.98);
-  }
-
-  .memory-wall__lifestyle-gradient {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, var(--cream) 0%, transparent 18%, transparent 85%, rgba(245, 241, 230, 0.4) 100%);
-    pointer-events: none;
   }
 
   @media (max-width: 960px) {

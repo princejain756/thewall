@@ -1,0 +1,247 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { listProducts } from '../lib/products';
+import { collections } from '../data/collections';
+
+const query = Astro.url.searchParams.get('q')?.trim() || '';
+const products = query ? await listProducts({ search: query, limit: 48 }) : [];
+const picks = await listProducts({ limit: 8 });
+const featuredCollections = collections.slice(0, 8);
+---
+
+<Layout title={query ? `Search: ${query} — The Wall Records` : 'Search — The Wall Records'}>
+  <Header searchPage initialQuery={query} />
+  <main class="search-page">
+    <div class="search-page__results-wrap">
+      <div
+        class="search-page__inner container"
+        data-predictive-search
+        data-predictive-limit="48"
+        data-predictive-update-url="true"
+        data-predictive-input-selector="[data-search-input]"
+      >
+        <div class="search-page__meta" data-predictive-meta hidden={!query || products.length === 0}>
+          <p class="search-page__count">
+            Found <strong data-predictive-count>{products.length}</strong> results for '<span data-predictive-query>{query}</span>'
+          </p>
+        </div>
+
+        <div class="search-page__grid" data-predictive-grid role="list">
+          {query && products.length > 0 && products.map((product) => (
+            <ProductCard product={product} />
+          ))}
+        </div>
+
+        <p class="search-page__empty" data-predictive-empty hidden={!query || products.length > 0}>
+          {query ? `No results for "${query}". Browse collections below or try another keyword.` : 'Search above, or explore our bestsellers below.'}
+        </p>
+        <p class="search-page__loading" data-predictive-loading hidden>Searching...</p>
+      </div>
+    </div>
+
+    <section class="search-page__discover container" aria-label="Discover more posters">
+      <div class="search-page__discover-head">
+        <div>
+          <span class="label">Keep exploring</span>
+          <h2 class="search-page__discover-title heading-serif">More posters for your wall</h2>
+        </div>
+        <a href="/shop" class="search-page__shop-link">Shop all →</a>
+      </div>
+
+      <div class="search-page__picks">
+        {picks.map((product) => (
+          <ProductCard product={product} />
+        ))}
+      </div>
+
+      <div class="search-page__collections">
+        <p class="search-page__collections-label">Browse by collection</p>
+        <div class="search-page__chips">
+          {featuredCollections.map((col) => (
+            <a href={col.href} class="search-page__chip">{col.label}</a>
+          ))}
+        </div>
+      </div>
+
+      <a href="/shop" class="btn btn--maroon search-page__cta">View all posters</a>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .search-page {
+    padding: 0.75rem 0 var(--section-pad-y);
+  }
+
+  .search-page__results-wrap {
+    padding-bottom: 0.5rem;
+  }
+
+  .search-page__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 0.25rem;
+  }
+
+  .search-page__meta {
+    padding-bottom: 0;
+  }
+
+  .search-page__count {
+    font-size: 0.8rem;
+    opacity: 0.75;
+  }
+
+  .search-page__count strong {
+    font-weight: 700;
+    color: var(--maroon);
+  }
+
+  .search-page__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem 1.25rem;
+  }
+
+  .search-page__empty,
+  .search-page__loading {
+    font-size: 0.85rem;
+    opacity: 0.75;
+    max-width: none;
+    text-align: center;
+    padding: 0.75rem 0 0.25rem;
+  }
+
+  .search-page__loading {
+    opacity: 0.55;
+  }
+
+  .search-page__discover {
+    margin-top: 1.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--cream-dark);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .search-page__discover-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .search-page__discover-title {
+    font-size: clamp(1.35rem, 4vw, 1.75rem);
+    margin-top: 0.2rem;
+    text-transform: none;
+  }
+
+  .search-page__shop-link {
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--maroon);
+    white-space: nowrap;
+  }
+
+  .search-page__shop-link:hover {
+    text-decoration: underline;
+  }
+
+  .search-page__picks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem 1.25rem;
+  }
+
+  .search-page__collections-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 0.6rem;
+  }
+
+  .search-page__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .search-page__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid rgba(139, 26, 16, 0.2);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--maroon);
+    background: #fff;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .search-page__chip:hover {
+    background: rgba(139, 26, 16, 0.06);
+    border-color: rgba(139, 26, 16, 0.35);
+  }
+
+  .search-page__cta {
+    align-self: center;
+    width: 100%;
+    max-width: 320px;
+    justify-content: center;
+    margin-top: 0.25rem;
+  }
+
+  @media (max-width: 640px) {
+    .search-page__inner {
+      padding-top: 0.5rem;
+      gap: 0.6rem;
+    }
+
+    .search-page__grid,
+    .search-page__picks {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem 0.6rem;
+    }
+
+    .search-page__grid :global(.product-card__title),
+    .search-page__picks :global(.product-card__title) {
+      font-size: 0.78rem;
+    }
+
+    .search-page__grid :global(.product-card__price),
+    .search-page__picks :global(.product-card__price) {
+      font-size: 0.75rem;
+    }
+
+    .search-page__grid :global(.product-card__image-wrap),
+    .search-page__picks :global(.product-card__image-wrap) {
+      margin-bottom: 0.5rem;
+    }
+
+    .search-page__discover {
+      margin-top: 0.85rem;
+      padding-top: 1.15rem;
+      gap: 1rem;
+    }
+
+    .search-page__discover-title {
+      font-size: 1.25rem;
+    }
+
+    .search-page__empty {
+      padding: 0.5rem 0 0;
+    }
+  }
+</style>

@@ -1,20 +1,33 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
-import ArtPostersSection from '../components/ArtPostersSection.astro';
-import MemoriesSection from '../components/MemoriesSection.astro';
-import MemoryWallSection from '../components/MemoryWallSection.astro';
-import FeaturesSection from '../components/FeaturesSection.astro';
+import PromoTicker from '../components/PromoTicker.astro';
+import HeroBannerSection from '../components/HeroBannerSection.astro';
+import CollectionsSection from '../components/CollectionsSection.astro';
+import CustomMadeSection from '../components/CustomMadeSection.astro';
+import TrendingNowSection from '../components/TrendingNowSection.astro';
+import F1CollectionSection from '../components/F1CollectionSection.astro';
+import TrustBarSection from '../components/TrustBarSection.astro';
 import Footer from '../components/Footer.astro';
+import { listHomepageProducts, listProducts, getCollectionBySlug } from '../lib/products';
+
+const trendingProducts = await listHomepageProducts(10);
+const f1Collection = await getCollectionBySlug('f1');
+const f1Products = f1Collection
+  ? await listProducts({ collection: f1Collection.id, limit: 12 })
+  : [];
 ---
 
 <Layout>
   <Header />
+  <PromoTicker />
   <main>
-    <ArtPostersSection />
-    <MemoriesSection />
-    <MemoryWallSection />
-    <FeaturesSection />
+    <HeroBannerSection />
+    <CollectionsSection />
+    <CustomMadeSection />
+    <TrendingNowSection products={trendingProducts} />
+    <F1CollectionSection products={f1Products} />
+    <TrustBarSection />
   </main>
   <Footer />
 </Layout>
