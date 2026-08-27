@@ -340,7 +340,7 @@ Printed on archival-quality 300 GSM ultra-thick matte paper with sharp, vibrant 
 • Instant live mockup preview with photo upload
 • Archival anti-glare finish with 300 GSM photo paper
 • Express shipping across India with secure protective packaging`,
-    images: ['/images/custom-made/memory-poster.png', '/images/custom-made/album.png', '/Grandmother.png', '/Granduncle.png'],
+    images: ['/images/custom-made/memory-poster.png', '/images/custom-made/album.png', '/images/custom-made/framed-wall-art.jpg', '/images/custom-made/polaroids.png'],
     tags: ['custom', 'memory', 'sister', 'rakhi', 'family', 'photobook', 'poster'],
   },
   {
@@ -354,7 +354,7 @@ Printed on ultra-thick 300 GSM matte photo paper for rich colours, sharp detaili
 • Custom photo upload with live mockup rendering
 • Ultra-sharp high-definition 300 DPI print
 • Free express shipping on prepaid orders`,
-    images: ['/images/custom-made/memory-poster.png', '/Granduncle.png', '/images/custom-made/album.png'],
+    images: ['/images/custom-made/memory-poster.png', '/images/custom-made/album.png', '/images/custom-made/framed-wall-art.jpg', '/images/custom-made/polaroids.png'],
     tags: ['custom', 'memory', 'personalized', 'couples', 'travel', 'poster'],
   },
 ];

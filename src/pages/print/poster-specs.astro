@@ -1,0 +1,293 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<Layout title="Custom Memory Poster — Size & Upload Specs · The Wall" description="Print-ready specifications for the Custom Memory Poster: A4/A5/A3 dimensions at 300 DPI, file formats, color profile, and how to prep your photo.">
+  <Header />
+  <main class="specs-page">
+    <header class="specs-page__head">
+      <div>
+        <p class="specs-page__eyebrow">The Wall Records</p>
+        <h1>Custom Memory Poster — Size & Upload Specifications</h1>
+      </div>
+      <div class="specs-page__actions no-print">
+        <button type="button" class="specs-page__btn specs-page__btn--primary" id="print-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>
+          </svg>
+          Print this page
+        </button>
+        <a class="specs-page__btn" href="/downloads/poster-specs.pdf" download>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+          </svg>
+          Download as PDF
+        </a>
+        <a class="specs-page__btn" href="/products/memory-poster">← Back to product</a>
+      </div>
+    </header>
+
+    <p class="specs-page__intro">
+      Every Custom Memory Poster is printed on ultra-thick <strong>300 GSM archival matte paper</strong> with anti-glare coating, dispatched in 24–48 hours. Use this reference to prep your photo or designer template at print-ready quality.
+    </p>
+
+    <div class="specs-page__quick">
+      <div><b>File formats</b><span>JPG · PNG · WebP · HEIC</span></div>
+      <div><b>Max file size</b><span>25 MB</span></div>
+      <div><b>Color profile</b><span>sRGB recommended</span></div>
+      <div><b>Resolution</b><span>300 DPI minimum</span></div>
+    </div>
+
+    <section class="specs-page__section">
+      <h2>Size Reference</h2>
+      <div class="specs-page__sizes" aria-hidden="true">
+        <div class="specs-size specs-size--a5"><b>A5</b><span>5.8 × 8.3"</span><small>1748 × 2480 px</small></div>
+        <div class="specs-size specs-size--a4"><b>A4</b><span>8.3 × 11.7"</span><small>2480 × 3508 px</small></div>
+        <div class="specs-size specs-size--square"><b>Square</b><span>8.5 × 8.5"</span><small>2550 × 2550 px</small></div>
+        <div class="specs-size specs-size--a3"><b>A3</b><span>11.7 × 16.5"</span><small>3510 × 4950 px</small></div>
+      </div>
+
+      <table class="specs-page__table">
+        <thead>
+          <tr><th>Size</th><th>Inches</th><th>Pixels @ 300 DPI</th><th>Best for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>A5</b></td><td>5.8 × 8.3"</td><td>1748 × 2480 px</td><td>Desk, shelf, small gift</td></tr>
+          <tr><td><b>A4</b></td><td>8.3 × 11.7"</td><td>2480 × 3508 px</td><td>Standard wall poster</td></tr>
+          <tr><td><b>Square</b></td><td>8.5 × 8.5"</td><td>2550 × 2550 px</td><td>Instagram prints, frames</td></tr>
+          <tr><td><b>A3</b></td><td>11.7 × 16.5"</td><td>3510 × 4950 px</td><td>Statement wall piece</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="specs-page__section">
+      <h2>How to prep your file</h2>
+      <ol class="specs-page__list">
+        <li><b>Format:</b> JPG, PNG, WebP, or HEIC. PNG-24 for templates with a transparent cutout window.</li>
+        <li><b>Resolution:</b> Match the pixel dimensions in the table above. Higher = sharper print.</li>
+        <li><b>Color profile:</b> sRGB recommended. CMYK files are auto-converted.</li>
+        <li><b>File size:</b> Up to 25 MB. For very large files, export at 90–95% JPG quality.</li>
+        <li><b>Cropping:</b> Upload the exact final crop — we don't crop for you. Leave a small bleed if your image extends edge-to-edge.</li>
+      </ol>
+    </section>
+
+    <footer class="specs-page__footer">
+      <p>the.Wall Records · 2thewall.in · Printed to order with care</p>
+    </footer>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .specs-page {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 2rem var(--section-pad-x) 4rem;
+  }
+
+  .specs-page__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    border-bottom: 2px solid var(--maroon);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .specs-page__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    color: var(--maroon);
+    margin: 0 0 0.25rem;
+    font-weight: 600;
+  }
+
+  .specs-page__head h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 2rem;
+    margin: 0;
+    color: #1a1a1a;
+    line-height: 1.2;
+  }
+
+  .specs-page__actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .specs-page__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    border: 1.5px solid #d1d1d1;
+    background: #fff;
+    color: #1a1a1a;
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .specs-page__btn:hover { border-color: #1a1a1a; }
+
+  .specs-page__btn--primary {
+    background: var(--maroon);
+    border-color: var(--maroon);
+    color: #fff;
+  }
+
+  .specs-page__btn--primary:hover {
+    background: var(--maroon-dark);
+    border-color: var(--maroon-dark);
+  }
+
+  .specs-page__intro {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #3a3a3a;
+    margin: 0 0 1.5rem;
+  }
+
+  .specs-page__quick {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .specs-page__quick div {
+    border: 1px solid var(--cream-dark);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(180deg, #fffaf8 0%, #fdf6f3 100%);
+  }
+
+  .specs-page__quick div b {
+    display: block;
+    color: var(--maroon);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+  }
+
+  .specs-page__quick div span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+
+  .specs-page__section { margin-bottom: 2.5rem; }
+
+  .specs-page__section h2 {
+    font-size: 1rem;
+    color: var(--maroon);
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--cream-dark);
+    padding-bottom: 0.5rem;
+    font-weight: 700;
+  }
+
+  .specs-page__sizes {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.5rem 0;
+  }
+
+  .specs-size {
+    background: linear-gradient(180deg, #f6e8e5 0%, #e8c9c0 100%);
+    border: 1.5px solid var(--maroon);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem 0.4rem;
+    color: #1a1a1a;
+  }
+
+  .specs-size b { font-size: 0.95rem; }
+  .specs-size span { font-size: 0.75rem; opacity: 0.8; margin-top: 0.15rem; }
+  .specs-size small { font-size: 0.65rem; opacity: 0.65; margin-top: 0.1rem; }
+
+  .specs-size--a5 { height: 100px; min-width: 55px; }
+  .specs-size--a4 { height: 145px; min-width: 65px; }
+  .specs-size--square { height: 120px; width: 120px; }
+  .specs-size--a3 { height: 185px; min-width: 80px; }
+
+  .specs-page__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+  }
+
+  .specs-page__table th,
+  .specs-page__table td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  .specs-page__table th {
+    background: rgba(139, 26, 16, 0.06);
+    color: var(--maroon);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  .specs-page__table tr:last-child td { border-bottom: none; }
+
+  .specs-page__list {
+    padding-left: 1.5rem;
+    margin: 0;
+  }
+
+  .specs-page__list li {
+    margin-bottom: 0.75rem;
+    line-height: 1.55;
+    font-size: 0.95rem;
+  }
+
+  .specs-page__footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--cream-dark);
+    text-align: center;
+    font-size: 0.85rem;
+    color: #6b6b6b;
+  }
+
+  @media print {
+    .no-print, .site-header, .site-footer { display: none !important; }
+    .specs-page { padding: 0; }
+    .specs-page__head { border-bottom: 2px solid #000; }
+    .specs-page__btn--primary { display: none; }
+  }
+</style>
+
+<script>
+  document.getElementById('print-btn')?.addEventListener('click', () => window.print());
+  // Auto-trigger print dialog if ?print=1 query param
+  if (new URLSearchParams(window.location.search).get('print') === '1') {
+    setTimeout(() => window.print(), 400);
+  }
+</script>
